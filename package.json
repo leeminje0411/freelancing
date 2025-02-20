@@ -1,7 +1,17 @@
 {
+  "name": "freelancing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node api/index.cjs"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.750.0",
     "bootstrap": "^5.3.3",
+    "cookie": "^1.0.2",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",

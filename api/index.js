@@ -13,21 +13,32 @@ require('dotenv').config()
 // const s3 = require('../lib/s3');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
+const { serialize } = require('cookie');
+const token = 'myTokenValue';
+const cookieParser = require('cookie-parser');
+app.use(cookieParser()); 
+
+const serializedCookie = serialize('id', 'myCookieValue', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60,
+    path: '/'
+});
 
 // JSON 형식 요청을 파싱하기 위한 설정 (필요하면 추가)
 app.use(express.json());
 const PORT = 3002;
-app.use(session({
-    secret: 'my-secret-key',   // 🔥 세션 암호화 키 (랜덤한 값으로 설정!)
-    resave: false,            // 변경 사항 없을 때도 계속 저장할지 여부 (false 추천)
-    saveUninitialized: true,   // 초기화되지 않은 세션을 저장할지 여부 (true)
-    cookie: {
-        // secure: true,          // 🔥 HTTPS에서만 쿠키 전송 (HTTP에서는 false)
-        httpOnly: true,        // 🔥 JavaScript에서 쿠키 접근 불가 (XSS 방지)
-        sameSite: 'strict',    // 🔥 동일 사이트에서만 쿠키 전송 (CSRF 방지)
-        maxAge: 1000 * 60 * 60 // 1시간 후 세션 만료
-    }
-}));
+// app.use(session({
+//     secret: 'my-secret-key',   // 🔥 세션 암호화 키 (랜덤한 값으로 설정!)
+//     resave: false,            // 변경 사항 없을 때도 계속 저장할지 여부 (false 추천)
+//     saveUninitialized: true,   // 초기화되지 않은 세션을 저장할지 여부 (true)
+//     cookie: {
+//         // secure: true,          // 🔥 HTTPS에서만 쿠키 전송 (HTTP에서는 false)
+//         httpOnly: true,        // 🔥 JavaScript에서 쿠키 접근 불가 (XSS 방지)
+//         sameSite: 'strict',    // 🔥 동일 사이트에서만 쿠키 전송 (CSRF 방지)
+//         maxAge: 1000 * 60 * 60 // 1시간 후 세션 만료
+//     }
+// }));
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -48,14 +59,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/upload', async (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     res.render('upload', { ...await func.getPost(req, res, 1), ...await func.getCategory(req, res) });
 })
 
 app.post('/upload/process', upload.single('image'), (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     // 1) 파일 유무 확인
@@ -121,7 +132,7 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
 });
 
 app.post('/post/delete', (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     const { postId } = req.body;
@@ -134,7 +145,7 @@ app.post('/post/delete', (req, res) => {
 });
 
 app.post('/post/updateOrder', (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     const orderData = req.body;
@@ -178,8 +189,7 @@ app.post('/login/process', (req, res) => {
         if (result.length === 0) {
             return res.status(400).json({ message: '로그인 실패' });
         }
-        req.session.primaryKey = result[0].id;
-        req.session.save(() => {});
+        res.setHeader('Set-Cookie', serializedCookie);
         res.redirect('/upload');
     });
 })
@@ -193,14 +203,14 @@ app.get('/changeOrder', async (req, res) => {
 })
 
 app.get('/edit', (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     res.render('edit');
 })
 
 app.get('/manage', async (req, res) => {
-    if (!req.session.primaryKey) {
+    if (!req.cookies.id)  {
         return res.redirect('/login');
     }
     res.render('manage');
