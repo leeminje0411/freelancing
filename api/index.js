@@ -8,7 +8,10 @@ app.use(express.json());
 const db = require('./db');
 const fs = require('fs');
 app.use(express.urlencoded({ extended: true }));
-const func = require('../lib/func')
+const func = require('../lib/func');
+require('dotenv').config()
+const s3 = require('../lib/s3');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 // JSON 형식 요청을 파싱하기 위한 설정 (필요하면 추가)
 app.use(express.json());
@@ -41,41 +44,54 @@ app.get('/upload',async(req, res) => {
 })
 
 app.post('/upload/process', upload.single('image'), (req, res) => {
+    // 파일이 없다면 에러
     if (!req.file) {
-        return res.status(400).json({ message: '파일 업로드 실패' });
+        return res.status(400).json({ message: '파일이 없습니다.' });
     }
 
-    // 파일 저장 경로 정의 (originalname 사용 예시)
-    const saveDir = path.join(__dirname, '..', 'public/uploads');
-    const filePath = path.join(saveDir, req.file.originalname);
+    // 파일 이름 중복 방지용으로 시간값 + 원본이름
+    const fileName = Date.now() + '_' + req.file.originalname;
 
-    fs.writeFile(filePath, req.file.buffer, (fsErr) => {
-        if (fsErr) {
-            console.error('파일 저장 에러:', fsErr);
-            return res.status(500).json({ message: '파일 저장 에러' });
-        }
+    // S3에 업로드할 파라미터
+    const putParams = {
+        Bucket: `linkup-mj12270411`,  // 업로드할 S3 버킷명
+        Key: fileName,                      // 업로드될 파일 이름
+        Body: req.file.buffer,              // multer memoryStorage에서 받은 버퍼
+        ContentType: req.file.mimetype      // MIME 타입
+    };
 
-        // DB 저장용 경로
-        const imageUrl = `/uploads/${req.file.originalname}`;
+    // 4) S3 업로드 (Promise .then / .catch)
+    s3.send(new PutObjectCommand(putParams))
+        .then(() => {
+            // 성공적으로 업로드된 후, 이미지 접근 URL 만들기
+            // (버킷이 퍼블릭으로 열려있다고 가정)
+            const imageUrl = `https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/${fileName}`;
 
-        // DB에 이미지 경로 삽입
-        db.query(`INSERT INTO post (imageUrl, category, sortOrder)
-  SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
-  FROM post
-  WHERE category = ?`, [imageUrl, 1,1], (dbErr, result) => {
-            if (dbErr) {
-                console.error('DB 저장 에러:', dbErr);
-                
-                
-                
-            }
-            res.json('hi'); 
-            // 성공 응답
-            
-            
+            // DB 저장 (sortOrder를 MIN - 1 로 삽입 예시)
+            const sql = `
+        INSERT INTO post (imageUrl, category, sortOrder)
+        SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
+        FROM post
+        WHERE category = ?
+      `;
+            db.query(sql, [imageUrl, 1, 1], (dbErr) => {
+                if (dbErr) {
+                    console.error('DB 저장 에러:', dbErr);
+                    return res.status(500).json({ message: 'DB 저장 에러' });
+                }
+                // 성공 응답
+                res.json({
+                    message: '이미지 업로드 및 DB 저장 성공',
+                    imageUrl: imageUrl
+                });
+            });
+        })
+        .catch((err) => {
+            console.error('S3 업로드 에러:', err);
+            res.status(500).json({ message: 'S3 업로드 실패', error: err.message });
         });
-    });
 });
+
 
 app.post('/post/delete', (req, res) => {
     const { postId } = req.body;
