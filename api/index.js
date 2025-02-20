@@ -30,6 +30,13 @@ app.use(session({
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const s3 = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    }
+});
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.set('views', path.join(__dirname, '..', 'views'));
@@ -39,8 +46,8 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 
-app.get('/upload',async(req, res) => {
-    res.render('upload', { ... await func.getPost(req, res, 1) });
+app.get('/upload', async (req, res) => {
+    res.render('upload', { ...await func.getPost(req, res, 1) });
 })
 
 app.post('/upload/process', upload.single('image'), (req, res) => {
@@ -54,7 +61,7 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
 
     // S3에 업로드할 파라미터
     const putParams = {
-        Bucket: `linkup-mj12270411`,  // 업로드할 S3 버킷명
+        Bucket: process.env.AWS_BUCKET_NAME,  // 업로드할 S3 버킷명 (환경변수로 설정)
         Key: fileName,                      // 업로드될 파일 이름
         Body: req.file.buffer,              // multer memoryStorage에서 받은 버퍼
         ContentType: req.file.mimetype      // MIME 타입
@@ -65,15 +72,15 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
         .then(() => {
             // 성공적으로 업로드된 후, 이미지 접근 URL 만들기
             // (버킷이 퍼블릭으로 열려있다고 가정)
-            const imageUrl = `https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/${fileName}`;
+            const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
 
             // DB 저장 (sortOrder를 MIN - 1 로 삽입 예시)
             const sql = `
-        INSERT INTO post (imageUrl, category, sortOrder)
-        SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
-        FROM post
-        WHERE category = ?
-      `;
+                INSERT INTO post (imageUrl, category, sortOrder)
+                SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
+                FROM post
+                WHERE category = ?
+            `;
             db.query(sql, [imageUrl, 1, 1], (dbErr) => {
                 if (dbErr) {
                     console.error('DB 저장 에러:', dbErr);
@@ -92,7 +99,6 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
         });
 });
 
-
 app.post('/post/delete', (req, res) => {
     const { postId } = req.body;
     db.query('DELETE FROM post WHERE id = ?', [postId], (err, result) => {
@@ -101,20 +107,15 @@ app.post('/post/delete', (req, res) => {
         }
         res.redirect('/upload');
     });
-}
-)
+});
 
 app.get('/login', (req, res) => {
     res.render('login');
 })
 
 app.post('/login/process', (req, res) => {
-    console.log(req.body); 
     const { userId, password } = req.body;
     db.query('SELECT * FROM admin WHERE userId = ? AND password = ?', [userId, password], (err, result) => {
-
-        console.log(result);
-
         if (err) {
             throw err;
         }
@@ -126,12 +127,10 @@ app.post('/login/process', (req, res) => {
     });
 })
 
-
 app.get('/changeOrder', async (req, res) => {
     const category = req.query.category;
-    res.render('changeOrder', { ... await func.getPost(req, res, category)});
+    res.render('changeOrder', { ...await func.getPost(req, res, category) });
 })
-
 
 app.get('/edit', (req, res) => {
     res.render('edit');
@@ -140,8 +139,9 @@ app.get('/edit', (req, res) => {
 app.get('/manage', async (req, res) => {
     res.render('manage');
 })
+
 app.listen(PORT, () => {
-    console.log('Server is running on http://localhost:',PORT);
+    console.log('Server is running on http://localhost:', PORT);
 })
 
 module.exports = app;
