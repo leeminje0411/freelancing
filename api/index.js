@@ -179,6 +179,7 @@ app.post('/login/process', (req, res) => {
             return res.status(400).json({ message: '로그인 실패' });
         }
         req.session.primaryKey = result[0].id;
+        req.session.save(() => {});
         res.redirect('/upload');
     });
 })
