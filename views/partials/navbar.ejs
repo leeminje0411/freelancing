@@ -1,49 +1,112 @@
+<style>
+    /* ⭐ 사이드 메뉴 기본 스타일 */
+
+  .side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%); /* 왼쪽 밖으로 숨김 */
+  transition: transform 0.3s ease;
+  z-index: 2000; 
+  padding: 1rem;
+}
+.side-menu.show {
+  transform: translateX(0); /* 왼쪽에서 슬라이드 */
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  float: right;
+  margin-bottom: 1rem;
+}
+/* 네비바 때문에 본문이 가려지지 않도록 padding-top */
+body {
+  padding-top: 70px; 
+}
+</style>
+
+<!-- 상단 고정 네비바 -->
+<!-- 상단 고정 네비바 -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
-    <!-- 왼쪽 대시보드 문구 -->
-    <a class="navbar-brand fw-bold" href="#">대시보드</a>
+    <div class="container-fluid d-flex align-items-center justify-content-between">
 
-    <!-- 모바일에서 햄버거 메뉴 -->
-    <button class="navbar-toggler" type="button" id="menuToggle">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <!-- 왼쪽: 햄버거 + 브랜드 -->
+        <div class="d-flex align-items-center">
+            <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand fw-bold" href="/manage">대시보드</a>
+        </div>
 
-    <!-- ✅ PC에서는 메뉴가 우측 정렬 -->
-    <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link" href="/upload">업로드</a></li>
-            <li class="nav-item"><a class="nav-link" href="/edit">게시글 수정/삭제</a></li>
-            <li class="nav-item"><a class="nav-link" href="/visitors">방문자</a></li>
+        <!-- 실제 메뉴(토글될 영역) -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- 여기 필요한 메뉴들이 있으면 배치 -->
+            </ul>
+        </div>
+
+        <!-- 오른쪽 메뉴 (순서변경 드롭다운 + 다른 메뉴들) -->
+        <ul class="navbar-nav d-flex flex-row align-items-center me-3">
+            <!-- 드롭다운: 순서변경 -->
+            <li class="nav-item dropdown me-3">
+                <a class="nav-link dropdown-toggle"  id="orderDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    순서변경
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                    <li><a class="dropdown-item" href="/changeOrder?category=1">카테고리 1</a></li>
+                    <li><a class="dropdown-item" href="/changeOrder?category=2">카테고리 2</a></li>
+                </ul>
+            </li>
+
+            <!-- 게시글 수정/삭제 -->
+            <li class="nav-item me-3">
+                <a class="nav-link" href="/edit">게시글 수정/삭제</a>
+            </li>
+            <!-- 방문자 -->
+            <li class="nav-item me-3">
+                <a class="nav-link" href="/visitors">방문자</a>
+            </li>
         </ul>
+
+        <!-- 업로드 버튼 -->
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">업로드</button>
     </div>
 </nav>
 
-<!-- ✅ 모바일에서 오른쪽에서 슬라이드하는 햄버거 메뉴 -->
+<!-- 모바일에서 열리는 사이드 메뉴 -->
+<!-- 모바일에서 열리는 왼쪽 사이드 메뉴 -->
 <div id="sideMenu" class="side-menu">
+    <!-- 닫기 버튼 -->
     <button id="closeMenu" class="close-btn">&times;</button>
-    <ul>
-        <li><a href="#">업로드</a></li>
-        <li><a href="#">게시글 수정/삭제</a></li>
-        <li><a href="#">방문자</a></li>
+
+    <!-- 메뉴 목록(모바일에서만 보일 내용) -->
+    <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/edit">게시글 수정/삭제</a></li>
+        <li class="nav-item"><a class="nav-link" href="/visitors">방문자</a></li>
+        <!-- 필요한 메뉴 항목을 추가 -->
     </ul>
 </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const menuToggle = document.getElementById("menuToggle");
             const sideMenu = document.getElementById("sideMenu");
             const closeMenu = document.getElementById("closeMenu");
 
-            // ✅ 햄버거 메뉴 클릭 시 오른쪽에서 메뉴 등장
             menuToggle.addEventListener("click", function () {
                 sideMenu.classList.add("show");
             });
 
-            // ✅ 닫기 버튼 클릭 시 메뉴 숨기기
             closeMenu.addEventListener("click", function () {
                 sideMenu.classList.remove("show");
             });
 
-            // ✅ 화면 클릭 시 메뉴 닫기 (메뉴 외부 클릭 감지)
             document.addEventListener("click", function (event) {
                 if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
                     sideMenu.classList.remove("show");
