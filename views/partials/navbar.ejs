@@ -1,3 +1,4 @@
+
 <style>
     /* ⭐ 사이드 메뉴 기본 스타일 */
 
@@ -60,11 +61,15 @@ body {
                     aria-expanded="false">
                     순서변경
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="orderDropdown">
-                    <li><a class="dropdown-item" href="/changeOrder?category=1">카테고리 1</a></li>
-                    <li><a class="dropdown-item" href="/changeOrder?category=2">카테고리 2</a></li>
-                </ul>
-            </li>
+            <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                <% category.forEach(item=> { %>
+                <li>
+                        <a class="dropdown-item" href="/changeOrder?category=<%= item.id %>">
+                            <%= item.categoryName %>
+                        </a>
+                </li>
+                    <% }) %>
+            
 
             <!-- 게시글 수정/삭제 -->
             <li class="nav-item me-3">

@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
    <link rel="stylesheet" href="/spinner.css">
    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F554SC9QFM"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-F554SC9QFM');
+</script>
    
     
 </head>
@@ -25,6 +33,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
+                    <select id="categorySelect" class="form-select mb-2">
+                        <% category.forEach(item=> { %>
+                            <option value="<%= item.id %>">
+                                <%= item.categoryName %>
+                            </option>
+                            <% }) %>
+                        
+                    </select>
                     <input type="file" id="imageInput" class="form-control mb-2" accept="image/*">
                     <img id="preview" class="img-fluid d-none" alt="미리보기">
                 </div>
@@ -123,7 +139,8 @@
                 const uploadButton = document.getElementById("uploadButton");
                 const preview = document.getElementById("preview");
                 const uploadModal = new bootstrap.Modal(document.getElementById("uploadModal")); // ✅ Bootstrap 모달 객체
-
+                
+                const categorySelect = document.getElementById("categorySelect");
                 // ✅ 이미지 미리보기 기능
                 imageInput.addEventListener("change", function (event) {
                     const file = event.target.files[0];
@@ -144,9 +161,10 @@
                         alert("이미지를 선택하세요!");
                         return;
                     }
-
+                    const categoryValue = categorySelect.value;
                     const formData = new FormData();
                     formData.append("image", file);
+                    formData.append("category", categoryValue);
 
                     fetch("/upload/process", {
                         method: "POST",

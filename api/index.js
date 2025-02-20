@@ -12,6 +12,7 @@ const func = require('../lib/func');
 require('dotenv').config()
 // const s3 = require('../lib/s3');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const sharp = require('sharp');
 
 // JSON 형식 요청을 파싱하기 위한 설정 (필요하면 추가)
 app.use(express.json());
@@ -47,59 +48,82 @@ app.get('/', (req, res) => {
 })
 
 app.get('/upload', async (req, res) => {
-    res.render('upload', { ...await func.getPost(req, res, 1) });
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
+    res.render('upload', { ...await func.getPost(req, res, 1), ...await func.getCategory(req, res) });
 })
 
 app.post('/upload/process', upload.single('image'), (req, res) => {
-    // 파일이 없다면 에러
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
+    // 1) 파일 유무 확인
     if (!req.file) {
         return res.status(400).json({ message: '파일이 없습니다.' });
+
     }
+        const category = req.body.category;
 
-    // 파일 이름 중복 방지용으로 시간값 + 원본이름
-    const fileName = Date.now() + '_' + req.file.originalname;
+    // 2) Sharp 처리(가정: JPEG 품질만 80으로 변경, 원본 크기는 그대로)
+    sharp(req.file.buffer)
+        .jpeg({ quality: 80 })  // 필요하면 .resize({ width: 800 }) 추가
+        .toBuffer()
 
-    // S3에 업로드할 파라미터
-    const putParams = {
-        Bucket: process.env.S3_BUCKET_NAME,  // 업로드할 S3 버킷명 (환경변수로 설정)
-        Key: fileName,                      // 업로드될 파일 이름
-        Body: req.file.buffer,              // multer memoryStorage에서 받은 버퍼
-        ContentType: req.file.mimetype      // MIME 타입
-    };
+        // 3) Sharp 결과물(버퍼)이 나오면 S3 업로드
+        .then(processedBuffer => {
+            // 업로드될 파일명
+            const fileName = Date.now() + '_' + req.file.originalname;
 
-    // 4) S3 업로드 (Promise .then / .catch)
-    s3.send(new PutObjectCommand(putParams))
-        .then(() => {
-            // 성공적으로 업로드된 후, 이미지 접근 URL 만들기
-            // (버킷이 퍼블릭으로 열려있다고 가정)
+            // S3 파라미터
+            const putParams = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: fileName,
+                Body: processedBuffer,       // Sharp로 압축된 버퍼
+                ContentType: 'image/jpeg'    // JPEG 포맷
+            };
+
+            return s3.send(new PutObjectCommand(putParams))
+                .then(() => ({ fileName }));
+            // 다음 then()으로 넘기기 위해 { fileName }만 반환
+        })
+
+        // 4) DB 저장
+        .then(({ fileName }) => {
+            // S3 링크 구성
             const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
 
-            // DB 저장 (sortOrder를 MIN - 1 로 삽입 예시)
             const sql = `
-                INSERT INTO post (imageUrl, category, sortOrder)
-                SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
-                FROM post
-                WHERE category = ?
-            `;
-            db.query(sql, [imageUrl, 1, 1], (dbErr) => {
+        INSERT INTO post (imageUrl, category, sortOrder)
+        SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
+        FROM post
+        WHERE category = ?
+      `;
+            db.query(sql, [imageUrl, category, category], (dbErr) => {
                 if (dbErr) {
                     console.error('DB 저장 에러:', dbErr);
                     return res.status(500).json({ message: 'DB 저장 에러' });
                 }
+
                 // 성공 응답
                 res.json({
-                    message: '이미지 업로드 및 DB 저장 성공',
+                    message: '이미지(Sharp) 업로드 및 DB 저장 성공',
                     imageUrl: imageUrl
                 });
             });
         })
-        .catch((err) => {
-            console.error('S3 업로드 에러:', err);
-            res.status(500).json({ message: 'S3 업로드 실패', error: err.message });
+
+        // 5) 에러 처리
+        .catch(err => {
+            console.error('이미지 처리/업로드 에러:', err);
+            res.status(500).json({ message: '이미지 처리/업로드 실패', error: err.message });
         });
 });
 
 app.post('/post/delete', (req, res) => {
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
     const { postId } = req.body;
     db.query('DELETE FROM post WHERE id = ?', [postId], (err, result) => {
         if (err) {
@@ -110,6 +134,9 @@ app.post('/post/delete', (req, res) => {
 });
 
 app.post('/post/updateOrder', (req, res) => {
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
     const orderData = req.body;
     // 예: [{id: '3', sortOrder: 1}, {id: '5', sortOrder: 2}, ...]
 
@@ -142,6 +169,7 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/login/process', (req, res) => {
+  
     const { userId, password } = req.body;
     db.query('SELECT * FROM admin WHERE userId = ? AND password = ?', [userId, password], (err, result) => {
         if (err) {
@@ -151,20 +179,29 @@ app.post('/login/process', (req, res) => {
             return res.status(400).json({ message: '로그인 실패' });
         }
         req.session.primaryKey = result[0].id;
-        res.render('manage');
+        res.redirect('/upload');
     });
 })
 
 app.get('/changeOrder', async (req, res) => {
+    if(!req.session.primaryKey){
+        return res.redirect('/login');
+    }
     const category = req.query.category;
-    res.render('changeOrder', { ...await func.getPost(req, res, category) });
+    res.render('changeOrder', { ...await func.getPost(req, res, category), ...await func.getCategory(req, res) });
 })
 
 app.get('/edit', (req, res) => {
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
     res.render('edit');
 })
 
 app.get('/manage', async (req, res) => {
+    if (!req.session.primaryKey) {
+        return res.redirect('/login');
+    }
     res.render('manage');
 })
 
