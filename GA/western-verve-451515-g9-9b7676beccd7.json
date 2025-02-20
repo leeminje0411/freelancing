@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "western-verve-451515-g9",
+  "private_key_id": "9b7676beccd74899b0c3cc38aca3033884ce0429",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCcsutHo9N0H/FT\n21V8CSShn6wVpJg7zz7zlltPB4DPFejXFdd7+7tQdTj+sfYDabOOyL5xBWJ0thUX\nfvOxrUkwCyNbtdUFuUselZ+QTM/ddzG9fFzJ7ZhBGvrXvGNrXw0C9HZGXy5QS8/E\nYBIPUp6ZueAtwASAKDyeO+2EdK0N7S315icCAJMUUBO3m3WjQIDK7XIOBit86NT+\nRpMyTBXKE6mwuXSTRZkTXjZgnK5/skqtEab0Scw7W4KYP5x91sBZlM7ZlmMOUp+I\nX5G+0fV61avGRkXROPpkPCDaYQvdTo21/L9gpKzZJPl670lG5J4/J84K5XdAOSTS\nAAD1FlufAgMBAAECggEAR3buCOk1adObm1P/w6bj1vZcZC6B410cZ7leAUf5vfhP\nDbD/aqMfBY3ApaACBAJ0Cp2RBTigc3wLWIDkoVbXdxrNUGk4MvkTwmoYsJXngyh2\nPeX253z9oEuutS9M5E4gQAW/305Pb/1zTytFcUmL3a5BCHx3UP+Izd2k8HDJ7/xR\napnX5CCsGT7uuov1my62hT9wshvwr+BzsVwNZHOhLXCiVXe69n9XhuXj9zvI9Mry\nl15spj+MijWzLTKszPJLatKWclN9J6teKy3IcUY3IfVpF3n+wgFgqD6Dgm9STLT3\n4Wzz59xj8M1qelUdhzYIeJzqz/QKKA3OTl29kYB7AQKBgQDYXmh3I+031BvDdnEn\ny4zxUs4NAwI+mI6nPXEd3E9SuhIxiG4hqx7gjSahJ6p6eB9zWxiLcAEirwFJHqG2\nMRTWEZ5T2OzaHiJHVKxGZw61vUrtfS049CSUO8uGR8+n/nHzVf6jg27DJHA91r4x\n7NF6B6KDmOCcGt+GUQXlS92WHwKBgQC5ZpLqW7g9YqB9blKeSupWF6wXw8HobDE9\n2TqsYQTXinhWMjqnEskLgAv2X9vw7R330l8H9zDEh7d6KLRMEpvU+phME1fWbLYU\niJjooWP8POqV4qI79nCG/9/bZKBoKVCwNmBoIyIG0RZhYqN4QPUSiHuF5XWqP1P/\nVqgkLl+KgQKBgFs6y09Y3Z/Jln8/BI0j/WSPZoQD/cFI7/VCKdzOVL/r5tntzYny\nrg0+VshigjYrSg+InHvGmSP3qFIdUVARt9hfC2QNNijtxcRPxmfU8lXc36ftPNEj\n1/yMjc8rnjoWRhO08a4eL+imB5F7ZyyDzvtmFrboEeSgTBlFNngtGdw/AoGAalqw\nLqac4wHf5PRTiqCZGvgLbbqLUuQ1vzANG3OwTmENtQytXshE8kbrFdNZnTS4u0A/\n6Zbgr+zW0Mnm27jVEfELSqDSA5xrOw49AT4L2Fetjnvq6xDs7lR8OyPXbMk+k0cu\nOK7mxxhMiWMHOWWx8IbArUe7HwWjDtfMLq03e4ECgYEAoSvnxZDtNP7w5Dab/Cnm\nqzrUN1qkCBqgSI4uwUmCkzq7eSBGnUWtQ4cI04m+zalBOLyG17zk46E+iSIEAy48\nmViXaaQP/GSBpOEe3/iRETSE078FosqKGbnpaqQmCDDeIiYCZDaaiEq2RHSh9Ak2\nLvIJL8KOtAxhHp8Wb3RMWhI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "freelancing@western-verve-451515-g9.iam.gserviceaccount.com",
+  "client_id": "110056543731745842996",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/freelancing%40western-verve-451515-g9.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

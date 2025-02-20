@@ -17,6 +17,12 @@ const { serialize } = require('cookie');
 const token = 'myTokenValue';
 const cookieParser = require('cookie-parser');
 app.use(cookieParser()); 
+const { BetaAnalyticsDataClient } = require('@google-analytics/data');
+const e = require('express');
+// 예: 만약 server.js가 GA 폴더보다 한 단계 더 깊은 곳에 있으면
+const keyFilePath = path.join(__dirname, '../GA', 'western-verve-451515-g9-9b7676beccd7.json');
+const analyticsDataClient = new BetaAnalyticsDataClient({ keyFile: keyFilePath });
+const propertyId = '479085116';
 
 const serializedCookie = serialize('id', 'myCookieValue', {
     httpOnly: true,
@@ -50,6 +56,9 @@ const s3 = new S3Client({
     }
 });
 
+app.get('/api/visitors', async (req, res) => {
+    
+});
 app.use(express.static(path.join(__dirname, '../public')));
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
@@ -210,11 +219,49 @@ app.get('/edit', (req, res) => {
 })
 
 app.get('/manage', async (req, res) => {
-    if (!req.cookies.id)  {
-        return res.redirect('/login');
+    if (!req.cookies.id) {
+        // 로그인 안 되어 있으면 간단히 안내 문구 출력 (테스트용)
+        return res.send('관리자 페이지입니다. (로그인 안 됨)');
+    } else {
+        // 로그인 되어 있으면 GA4 API 호출
+        try {
+            const [response] = await analyticsDataClient.runReport({
+                property: `properties/${propertyId}`,
+                dateRanges: [
+                    { startDate: '7daysAgo', endDate: 'today' },
+                    // ↑ 원하는 기간(예: startDate='2023-09-01', endDate='2023-09-07')
+                ],
+                metrics: [
+                    { name: 'activeUsers' }
+                ],
+                dimensions: [
+                    { name: 'date' }
+                    // ↑ 날짜별로 쪼개기
+                ]
+            });
+
+            // rows 배열을 순회하며 { date, count } 형태로 가공
+            const dailyData = response?.rows?.map(row => {
+                const dateStr = row.dimensionValues?.[0]?.value;  // 예: '20230919'
+                const countStr = row.metricValues?.[0]?.value;    // 예: '123'
+                return {
+                    date: dateStr,
+                    count: countStr
+                };
+            }) || [];
+            console.log(dailyData)
+            // manage 페이지 렌더, dailyData 배열을 같이 넘김
+            res.render('manage', {
+                ...await func.getCategory(req, res),
+                ...await func.getPost(req, res, 1),
+                dailyData
+            });
+        } catch (error) {
+            console.error('GA4 API Error:', error);
+            res.status(500).send('<h1>GA4 데이터 불러오기 실패</h1>');
+        }
     }
-    res.render('manage');
-})
+});
 
 app.listen(PORT, () => {
     console.log('Server is running on http://localhost:', PORT);
