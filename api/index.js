@@ -10,7 +10,7 @@ const fs = require('fs');
 app.use(express.urlencoded({ extended: true }));
 const func = require('../lib/func');
 require('dotenv').config()
-const s3 = require('../lib/s3');
+// const s3 = require('../lib/s3');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 // JSON 형식 요청을 파싱하기 위한 설정 (필요하면 추가)
@@ -61,7 +61,7 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
 
     // S3에 업로드할 파라미터
     const putParams = {
-        Bucket: process.env.AWS_BUCKET_NAME,  // 업로드할 S3 버킷명 (환경변수로 설정)
+        Bucket: process.env.S3_BUCKET_NAME,  // 업로드할 S3 버킷명 (환경변수로 설정)
         Key: fileName,                      // 업로드될 파일 이름
         Body: req.file.buffer,              // multer memoryStorage에서 받은 버퍼
         ContentType: req.file.mimetype      // MIME 타입
@@ -72,7 +72,7 @@ app.post('/upload/process', upload.single('image'), (req, res) => {
         .then(() => {
             // 성공적으로 업로드된 후, 이미지 접근 URL 만들기
             // (버킷이 퍼블릭으로 열려있다고 가정)
-            const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+            const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
 
             // DB 저장 (sortOrder를 MIN - 1 로 삽입 예시)
             const sql = `

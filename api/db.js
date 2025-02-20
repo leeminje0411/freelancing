@@ -4,7 +4,7 @@ const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    database: process.env.DB_NAME,  // 올바른 데이터베이스 이름으로 설정
     port: process.env.DB_PORT
 });
 
