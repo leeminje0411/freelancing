@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showSpinner();
     setTimeout(() => {
         hideSpinner();
-    }, 1300);
+    }, 500);
 });
 
 
