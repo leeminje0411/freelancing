@@ -7,19 +7,10 @@
     <link rel="stylesheet" href="/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        /* ✅ 이미지 미리보기 스타일 */
-    #preview {
-    width: auto;
-    max-width: 100%; /* 부모 요소 기준으로 최대 크기 설정 */
-    max-height: 300px; /* ✅ 최대 높이 300px 제한 */
+   <link rel="stylesheet" href="/spinner.css">
+   
+   
     
-    margin-top: 10px;
-    border: 1px solid #ddd;
-    padding: 5px;
-    border-radius: 5px;
-}
-    </style>
 </head>
 <body>
 <%- include('partials/navbar') %>
@@ -44,46 +35,69 @@
             </div>
         </div>
     </div>
-    
+
+    <div id="spinnerOverlay" class="spinner-backdrop" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- ✅ 메인 컨테이너 -->
     <div class="container">
-<!-- 예: post 배열을 순회하여 이미지와 버튼을 표시 -->
-<div class="row g-3">
-    <% if (post && post.length> 0) { %>
-        <% post.forEach(item=> { %>
-            <div class="col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center">
+        <!-- 드래그앤드롭 대상 컨테이너 -->
+        <div id="imageList" class="row g-3">
+            <% if (post && post.length> 0) { %>
+                <% post.forEach(item=> { %>
+                    <!-- 각 아이템 -->
+                    <div class="col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center image-item"
+                        data-id="<%= item.id %>">
+    
+                        <div style="position: relative; width:80%;">
+                            <img src="<%= item.imageUrl %>" alt="Uploaded Image" class="img-fluid rounded d-block"
+                                style="width:100%;height:auto;">
+    
+                            <!-- 수정 버튼 -->
+                            <button type="button" class="btn btn-sm btn-primary position-absolute"
+                                style="bottom:10px;right:50px;" data="<%= item.id %>">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+    
+                            <!-- 삭제 버튼 -->
+                            <form action="/post/delete" method="POST" style="position:absolute;bottom:10px;right:10px;"
+                                onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                                <input type="hidden" name="postId" value="<%= item.id %>">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <% }) %>
+                        <% } else { %>
+                            <p class="text-center mt-4">No post available.</p>
+                            <% } %>
+        </div> <!-- /#imageList -->
+    </div> <!-- /.container -->
 
-                <div style="position: relative; width: 80%;">
-                    <img src="<%= item.imageUrl %>" alt="Uploaded Image" class="img-fluid rounded d-block"
-                        style="width: 100%; height: auto;">
-
-                    <!-- 수정 버튼 (연필) -->
-                    <button type="button" class="btn btn-sm btn-primary position-absolute"
-                        style="bottom: 10px; right: 50px;" data="<%= item.id %>">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-
-                    <!-- 삭제 버튼 (휴지통) -->
-                    <form action="/post/delete" method="POST" style="position: absolute; bottom: 10px; right: 10px;"
-                        onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                        <!-- 삭제할 게시물의 id를 hidden으로 넘김 -->
-                        <input type="hidden" name="postId" value="<%= item.id %>" />
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <% }) %>
-                <% } else { %>
-                    <p class="text-center mt-4">No post available.</p>
-                    <% } %>
-</div>
-</div>
     <!-- ✅ Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="/spinner.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageList = document.getElementById('imageList');
+
+            new Sortable(imageList, {
+                animation: 150, // 드래그 시 부드러운 움직임
+                handle: '.image-item', // 혹은 별도의 drag-handle 셀렉터 지정 가능
+                onEnd: function (evt) {
+                    console.log('드래그 완료');
+                }
+            });
+        });
+    </script>
     <!-- ✅ 간단한 이미지 미리보기 -->
     <script>
+
+    
+
         document.getElementById('imageInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -97,7 +111,10 @@
         });
 
         document.getElementById('uploadButton').addEventListener('click', function () {
-            alert('이미지 업로드 기능 추가 필요!');
+            showSpinner();
+            setTimeout(() => {
+                hideSpinner();
+            }, 1300);
         });
     </script>
     <script>

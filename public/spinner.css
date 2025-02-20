@@ -1,0 +1,56 @@
+
+
+ /* ✅ 이미지 미리보기 스타일 */
+ #preview {
+     width: auto;
+     max-width: 100%;
+     /* 부모 요소 기준으로 최대 크기 설정 */
+     max-height: 300px;
+     /* ✅ 최대 높이 300px 제한 */
+
+     margin-top: 10px;
+     border: 1px solid #ddd;
+     padding: 5px;
+     border-radius: 5px;
+ }
+
+ /* 오버레이 배경 (화면 전역 덮음) */
+ .spinner-backdrop {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.5);
+     /* 반투명 검은 배경 */
+     z-index: 9999;
+     /* 화면 맨 위에 */
+
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ /* 회전 스피너 (원형) */
+ .spinner {
+     width: 50px;
+     height: 50px;
+     border: 6px solid #f3f3f3;
+     /* 베이스 색상 */
+     border-top: 6px solid #2ce5e5;
+     /* 위쪽 라인 색상 */
+     border-radius: 50%;
+     animation: spin 0.7s linear infinite;
+ }
+
+ /* 360도 회전 애니메이션 */
+ @keyframes spin {
+     0% {
+         transform: rotate(0deg);
+     }
+
+     100% {
+         transform: rotate(360deg);
+     }
+ }
+

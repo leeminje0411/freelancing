@@ -109,6 +109,34 @@ app.post('/post/delete', (req, res) => {
     });
 });
 
+app.post('/post/updateOrder', (req, res) => {
+    const orderData = req.body;
+    // 예: [{id: '3', sortOrder: 1}, {id: '5', sortOrder: 2}, ...]
+
+    // Promise.all로 병렬 업데이트
+    const updates = orderData.map(item => {
+        return new Promise((resolve, reject) => {
+            db.query(
+                'UPDATE post SET sortOrder = ? WHERE id = ?',
+                [item.sortOrder, item.id],
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }
+            );
+        });
+    });
+
+    Promise.all(updates)
+        .then(() => {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error('정렬 업데이트 에러:', err);
+            res.status(500).json({ success: false, message: 'DB 업데이트 실패' });
+        });
+});
+
 app.get('/login', (req, res) => {
     res.render('login');
 })

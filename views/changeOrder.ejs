@@ -7,10 +7,183 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/spinner.css">
 </head>
 <body>
-    <%- include('partials/navbar') %>
+    <style>
+        /* ⭐ 사이드 메뉴 기본 스타일 */
     
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #f8f9fa;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transform: translateX(-100%);
+            /* 왼쪽 밖으로 숨김 */
+            transition: transform 0.3s ease;
+            z-index: 2000;
+            padding: 1rem;
+        }
+    
+        .side-menu.show {
+            transform: translateX(0);
+            /* 왼쪽에서 슬라이드 */
+        }
+    
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            float: right;
+            margin-bottom: 1rem;
+        }
+    
+        /* 네비바 때문에 본문이 가려지지 않도록 padding-top */
+        body {
+            padding-top: 70px;
+        }
+    </style>
+    
+    <!-- 상단 고정 네비바 -->
+    <!-- 상단 고정 네비바 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 fixed-top">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+    
+            <!-- 왼쪽: 햄버거 + 브랜드 -->
+            <div class="d-flex align-items-center">
+                <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand fw-bold" href="/manage">대시보드</a>
+            </div>
+    
+            <!-- 실제 메뉴(토글될 영역) -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- 여기 필요한 메뉴들이 있으면 배치 -->
+                </ul>
+            </div>
+    
+            <!-- 오른쪽 메뉴 (순서변경 드롭다운 + 다른 메뉴들) -->
+            <ul class="navbar-nav d-flex flex-row align-items-center me-3">
+                <!-- 드롭다운: 순서변경 -->
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle" id="orderDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        순서변경
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                        <li><a class="dropdown-item" href="/changeOrder?category=1">카테고리 1</a></li>
+                        <li><a class="dropdown-item" href="/changeOrder?category=2">카테고리 2</a></li>
+                    </ul>
+                </li>
+    
+                <!-- 게시글 수정/삭제 -->
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="/edit">게시글 수정/삭제</a>
+                </li>
+                <!-- 방문자 -->
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="/visitors">방문자</a>
+                </li>
+            </ul>
+    
+            <!-- 업로드 버튼 -->
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">업로드</button>
+            <button id="saveChangesBtn" class="btn btn-warning mx-3">
+                수정 완료
+            </button>
+        </div>
+    </nav>
+    
+    <!-- 모바일에서 열리는 사이드 메뉴 -->
+    <!-- 모바일에서 열리는 왼쪽 사이드 메뉴 -->
+    <div id="sideMenu" class="side-menu">
+        <!-- 닫기 버튼 -->
+        <button id="closeMenu" class="close-btn">&times;</button>
+    
+        <!-- 메뉴 목록(모바일에서만 보일 내용) -->
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/edit">게시글 수정/삭제</a></li>
+            <li class="nav-item"><a class="nav-link" href="/visitors">방문자</a></li>
+            <!-- 필요한 메뉴 항목을 추가 -->
+        </ul>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ...
+
+            // “수정 완료” 버튼
+            const saveBtn = document.getElementById('saveChangesBtn');
+            saveBtn.addEventListener('click', function () {
+                // 1) DOM에서 .image-item 목록을 가져옴
+                const items = document.querySelectorAll('#imageList .image-item');
+                const orderData = [];
+                    document.addEventListener('DOMContentLoaded', () => {
+                    showSpinner();
+                    setTimeout(() => {
+                        hideSpinner();
+                    }, 300);
+                });
+                // 2) 배열로 변환 (id와 새 순서(index+1))
+                items.forEach((el, index) => {
+                    const postId = el.getAttribute('data-id');
+                    const newSortOrder = index + 1;
+                    orderData.push({
+                        id: postId,
+                        sortOrder: newSortOrder
+                    });
+                });
+
+                // 3) 서버에 POST 요청 (JSON)
+                fetch('/post/updateOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 특정 URL로 이동
+                            window.location.href = "/changeOrder?category=1";
+                        } else {
+                            alert('업데이트 실패: ' + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('에러 발생:', err);
+                        alert('서버 통신 오류가 발생했습니다.');
+                    });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuToggle = document.getElementById("menuToggle");
+            const sideMenu = document.getElementById("sideMenu");
+            const closeMenu = document.getElementById("closeMenu");
+
+            menuToggle.addEventListener("click", function () {
+                sideMenu.classList.add("show");
+            });
+
+            closeMenu.addEventListener("click", function () {
+                sideMenu.classList.remove("show");
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                    sideMenu.classList.remove("show");
+                }
+            });
+        });
+    </script>
+    
+  
     <!-- ✅ Bootstrap 모달 -->
     <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -31,26 +204,55 @@
         </div>
     </div>
     
+<!-- 메인 컨테이너 -->
 <div class="container">
-    <div class="row g-3">
+    <div class="row g-3" id="imageList">
         <% if (post && post.length> 0) { %>
             <% post.forEach(item=> { %>
-                <div class="col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center">
-                    <!-- 이미지 래퍼: position: relative -->
-                    <div style="position: relative; width: 80%;">
-                        <!-- 실제 이미지 -->
-                        <img src="<%= item.imageUrl %>" alt="Uploaded Image" class="img-fluid rounded d-block"
-                            style="width: 100%; height: auto;">
+                <!-- .image-item + data-id로 드래그 대상 -->
+                <div class="col-lg-3 col-md-6 col-sm-12 d-flex justify-content-center image-item"
+                    data-id="<%= item.id %>">
 
-                        <!-- 드래그 아이콘 (왼쪽 상단에 여백을 두고 크게 배치) -->
+                    <div style="position: relative; width: 80%;">
+                        <!-- (A) 순서 라벨 -->
+                        <div class="order-label"style="
+              position:absolute;
+              top:10px; left:10px;
+              z-index:10;
+              background:rgba(255,255,255,0.7);
+              padding:3px 6px;
+              border-radius:4px;
+              font-weight:bold;">
+                            <%= item.sortOrder %>
+                        </div>
+
+                        <!-- (B) 이미지 -->
+                        <!-- ===== CHANGED START: 기존 style="width: 100%; height: auto;" → max-width, height:auto ===== -->
+                        <div style="position: relative; width: 100%; max-width: 300px;">
+                            <!-- 예: 너비 300px로 제한, 필요시 조정 -->
+                        
+                            <!-- 실제 이미지 (부모 폭만큼 확장, 비율 유지) -->
+                            <img src="<%= item.imageUrl %>" alt="Uploaded Image" class="img-fluid rounded d-block"
+                                style="max-width: 100%; height: auto;">
+                        
+                            <!-- 삭제 폼(버튼) - 이미지 위 오른쪽 하단에 겹쳐 표시 -->
+                            <form action="/post/delete" method="POST" style="position: absolute; bottom: 10px; right: 10px;"
+                                onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                                <input type="hidden" name="postId" value="<%= item.id %>">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <!-- ===== CHANGED END ===== -->
+                        
+                        <!-- (C) 드래그 핸들 아이콘 (오른쪽 상단) -->
                         <div class="drag-handle" style="
-                                position: absolute; 
-                                top: 10px; 
-                                right: 5px; 
-                                cursor: move; 
-                                z-index: 10;
-                             ">
-                            <i class="bi bi-grip-vertical" style="font-size: 2.5rem; color: #333;"></i>
+                   position:absolute;
+                   top:10px; right:5px;
+                   cursor:move;
+                   z-index:10;">
+                            <i class="bi bi-grip-vertical" style="font-size:2.5rem; color:#333;"></i>
                         </div>
                     </div>
                 </div>
@@ -60,11 +262,50 @@
                         <% } %>
     </div>
 </div>
+<!-- 화면 우측 하단에 고정된 '수정 완료' 버튼 -->
+
+
+    <div id="spinnerOverlay" class="spinner-backdrop" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+</div>
+    <script src="/spinner.js"></script>
     <!-- ✅ Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                // (1) 드래그앤드롭 초기화
+                const imageList = document.getElementById('imageList');
+                if (imageList) {
+                    const sortable = new Sortable(imageList, {
+                        animation: 150,
+                        handle: '.drag-handle',
+                        // 드래그 끝난 후
+                        onEnd: function (evt) {
+                            console.log('드래그 완료, 새 위치 =', evt.newIndex);
+                            // 순서 라벨 갱신
+                            updateOrderLabels();
+                        }
+                    });
+
+                    // 초기 라벨 갱신
+                    updateOrderLabels();
+                }
+
+                // (2) 라벨 업데이트 함수: DOM 순서대로 1,2,3... 부여
+                function updateOrderLabels() {
+                    const items = imageList.querySelectorAll('.image-item');
+                    items.forEach((item, index) => {
+                        const label = item.querySelector('.order-label');
+                        if (label) {
+                            label.textContent = (index + 1);
+                        }
+                    });
+                }})
+    </script>
     <!-- ✅ 간단한 이미지 미리보기 -->
     <script>
+        
         document.getElementById('imageInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -126,6 +367,8 @@
             });
         });
     </script>
+    <!-- Bootstrap JS 아래, 혹은 원하는 위치에 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
