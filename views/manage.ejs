@@ -11,41 +11,160 @@
     <!-- Chart.js (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <style>body {
-  padding-top: 3000px !important; /* 혹은 70px 등 원하는 값 */
-} </style>
+
 </head>
 
 <body class="p-3">
     <%- include('partials/navbar') %>
 
-        <h1>일자별 방문자 수 (테이블)</h1>
-        <!-- <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>날짜(YYYYMMDD)</th>
-                    <th>방문자 수</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (dailyData) { %>
-                    <% dailyData.forEach(item=> { %>
-                        <tr>
-                            <td>
-                                <%= item.date %>
-                            </td>
-                            <td>
-                                <%= item.count %>
-                            </td>
-                        </tr>
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">이미지 업로드</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <select id="categorySelect" class="form-select mb-2">
+                        <% category.forEach(item=> { %>
+                            <option value="<%= item.id %>">
+                                <%= item.categoryName %>
+                            </option>
+                            <% }) %>
+    
+                    </select>
+                    <input type="file" id="imageInput" class="form-control mb-2" accept="image/*">
+                    <img id="preview" class="img-fluid d-none" alt="미리보기">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button class="btn btn-primary" id="uploadButton">업로드</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="container" style="padding-top: 100px;">
+    
+    <div class="row">
+        <!-- 왼쪽(차트) - 대략 30% -->
+        <!-- col-lg-4 vs col-lg-8 = 4/12 vs 8/12 (약 33% vs 67%) -->
+        <!-- 조금 차이는 있지만, Bootstrap 12칸 구조상 정확히 30/70을 하려면 커스텀으로 해야 합니다 -->
+        <div class="col-lg-4 col-md-5 col-12 mb-3">
+            <h2 class="h5">방문자 목록</h2>
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- 오른쪽(이미지) - 대략 70% -->
+        <div class="col-lg-8 col-md-7 col-12">
+            <div class="d-flex justify-content-between">
+                    <h1 class="h5">이미지 목록</h1>
+                    <a href="/upload"class="btn btn-primary">더 보기</a>
+            </div>
+           
+            <!-- 이미지 목록 -->
+            <div id="imageList" class="row g-3">
+                <!-- 각 이미지 아이템 -->
+                <!-- col-lg-4 → 큰 화면에서 3열(12/4=3개), col-md-6 → 중간화면 2열, col-sm-12 → 작은화면 1열 -->
+                <% if (post && post.length> 0) { %>
+                    <% post.forEach(item=> { %>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <img src="<%= item.imageUrl %>" class="card-img-top" alt="Uploaded Image">
+                              
+                            </div>
+                        </div>
                         <% }) %>
-                            <% } %>
-            </tbody>
-        </table> -->
+                            <% } else { %>
+                                <p class="mt-3">No post available.</p>
+                                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageList = document.getElementById('imageList');
 
-        <h2>막대 그래프 (Chart.js)</h2>
-        <canvas id="myChart" width="400" height="200"></canvas>
+        new Sortable(imageList, {
+            animation: 150, // 드래그 시 부드러운 움직임
+            handle: '.image-item', // 혹은 별도의 drag-handle 셀렉터 지정 가능
+            onEnd: function (evt) {
+                console.log('드래그 완료');
+            }
+        });
+    });
+</script>
+<!-- ✅ 간단한 이미지 미리보기 -->
+<script>
 
+
+
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('uploadButton').addEventListener('click', function () {
+        showSpinner();
+        setTimeout(() => {
+            hideSpinner();
+        }, 1300);
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const imageInput = document.getElementById("imageInput");
+        const uploadButton = document.getElementById("uploadButton");
+        const preview = document.getElementById("preview");
+        const uploadModal = new bootstrap.Modal(document.getElementById("uploadModal")); // ✅ Bootstrap 모달 객체
+
+        const categorySelect = document.getElementById("categorySelect");
+        // ✅ 이미지 미리보기 기능
+        imageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove("d-none");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ✅ AJAX로 이미지 업로드
+        uploadButton.addEventListener("click", function () {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert("이미지를 선택하세요!");
+                return;
+            }
+            const categoryValue = categorySelect.value;
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("category", categoryValue);
+
+            fetch("/upload/process", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert("이미지 업로드 성공!");
+
+                    window.location.href = "/upload";
+                })
+
+        });
+    });
+</script>
         <!-- 그래프 생성 스크립트 -->
         <script>
             // EJS 데이터 주입 (unescaped)

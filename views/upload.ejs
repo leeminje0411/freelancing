@@ -59,6 +59,21 @@
 
     <!-- ✅ 메인 컨테이너 -->
     <div class="container">
+        <li class="nav-item dropdown me-3">
+            <a class="nav-link dropdown-toggle" id="orderDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                카테고리
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                <% category.forEach(item=> { %>
+                    <li>
+                        <a class="dropdown-item" href="/changeOrder?category=<%= item.id %>">
+                            <%= item.categoryName %>
+                        </a>
+                    </li>
+                    <% }) %>
+            </ul>
+        </li>
         <!-- 드래그앤드롭 대상 컨테이너 -->
         <div id="imageList" class="row g-3">
             <% if (post && post.length> 0) { %>

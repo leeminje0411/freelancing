@@ -1,81 +1,75 @@
-
 <style>
     /* ⭐ 사이드 메뉴 기본 스타일 */
-
-  .side-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background-color: #f8f9fa;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  transform: translateX(-100%); /* 왼쪽 밖으로 숨김 */
-  transition: transform 0.3s ease;
-  z-index: 2000; 
-  padding: 1rem;
-}
-.side-menu.show {
-  transform: translateX(0); /* 왼쪽에서 슬라이드 */
-}
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  float: right;
-  margin-bottom: 1rem;
-}
-/* 네비바 때문에 본문이 가려지지 않도록 padding-top */
-body {
-  padding-top: 100px; 
-  
-}
+    .side-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        background-color: #f8f9fa;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        transform: translateX(-100%); /* 왼쪽 밖으로 숨김 */
+        transition: transform 0.3s ease;
+        z-index: 2000;
+        padding: 1rem;
+    }
+    .side-menu.show {
+        transform: translateX(0); /* 왼쪽에서 슬라이드 */
+    }
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        float: right;
+        margin-bottom: 1rem;
+    }
+    /* 네비바 때문에 본문이 가려지지 않도록 padding-top */
+    body {
+        padding-top: 100px;
+    }
 </style>
 
-<!-- 상단 고정 네비바 -->
 <!-- 상단 고정 네비바 -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 fixed-top">
     <div class="container-fluid d-flex align-items-center justify-content-between">
 
         <!-- 왼쪽: 햄버거 + 브랜드 -->
         <div class="d-flex align-items-center">
-            <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+            <!-- ⭐ 사이드 메뉴 오픈 버튼 (PC에서도 보이도록 d-block 추가) -->
+            <button id="menuToggle" class="navbar-toggler d-block me-2">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand fw-bold" href="/upload">대시보드</a>
+            <a class="navbar-brand fw-bold" href="/manage">대시보드</a>
         </div>
 
         <!-- 실제 메뉴(토글될 영역) -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- 여기 필요한 메뉴들이 있으면 배치 -->
+                <!-- 추가적인 네비게이션 메뉴 -->
             </ul>
         </div>
 
-        <!-- 오른쪽 메뉴 (순서변경 드롭다운 + 다른 메뉴들) -->
+        <!-- 오른쪽 메뉴 (카테고리 드롭다운 + 기타 메뉴들) -->
         <ul class="navbar-nav d-flex flex-row align-items-center me-3">
-            <!-- 드롭다운: 순서변경 -->
             <li class="nav-item dropdown me-3">
-                <a class="nav-link dropdown-toggle"  id="orderDropdown" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    순서변경
-                </a>
-            <ul class="dropdown-menu" aria-labelledby="orderDropdown">
-                <% category.forEach(item=> { %>
-                <li>
-                        <a class="dropdown-item" href="/changeOrder?category=<%= item.id %>">
-                            <%= item.categoryName %>
-                        </a>
-                </li>
+                <a class="nav-link dropdown-toggle" id="orderDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">카테고리</a>
+                <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                    <% category.forEach(item => { %>
+                        <li>
+                            <a class="dropdown-item" href="/changeOrder?category=<%= item.id %>">
+                                <%= item.categoryName %>
+                            </a>
+                        </li>
                     <% }) %>
-            
-
-            <!-- 게시글 수정/삭제 -->
+                </ul>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" href="/manage">대시보드</a>
+            </li>
             <li class="nav-item me-3">
                 <a class="nav-link" href="/edit">게시글 수정/삭제</a>
             </li>
-            <!-- 방문자 -->
             <li class="nav-item me-3">
                 <a class="nav-link" href="/visitors">방문자</a>
             </li>
@@ -86,37 +80,42 @@ body {
     </div>
 </nav>
 
-<!-- 모바일에서 열리는 사이드 메뉴 -->
-<!-- 모바일에서 열리는 왼쪽 사이드 메뉴 -->
+<!-- 📌 모바일 & PC에서 열리는 사이드 메뉴 -->
 <div id="sideMenu" class="side-menu">
     <!-- 닫기 버튼 -->
     <button id="closeMenu" class="close-btn">&times;</button>
 
-    <!-- 메뉴 목록(모바일에서만 보일 내용) -->
+    <!-- 메뉴 목록 -->
     <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/manage">대시보드</a></li>
         <li class="nav-item"><a class="nav-link" href="/edit">게시글 수정/삭제</a></li>
         <li class="nav-item"><a class="nav-link" href="/visitors">방문자</a></li>
-        <!-- 필요한 메뉴 항목을 추가 -->
+        <!-- 필요한 메뉴 추가 가능 -->
     </ul>
 </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const menuToggle = document.getElementById("menuToggle");
-            const sideMenu = document.getElementById("sideMenu");
-            const closeMenu = document.getElementById("closeMenu");
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sideMenu = document.getElementById("sideMenu");
+        const closeMenu = document.getElementById("closeMenu");
+
+        if (menuToggle) {
             menuToggle.addEventListener("click", function () {
                 sideMenu.classList.add("show");
             });
+        }
 
+        if (closeMenu) {
             closeMenu.addEventListener("click", function () {
                 sideMenu.classList.remove("show");
             });
+        }
 
-            document.addEventListener("click", function (event) {
-                if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
-                    sideMenu.classList.remove("show");
-                }
-            });
+        document.addEventListener("click", function (event) {
+            if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+                sideMenu.classList.remove("show");
+            }
         });
-    </script>
+    });
+</script>

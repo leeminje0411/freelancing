@@ -205,7 +205,25 @@
     
 <!-- 메인 컨테이너 -->
 <div class="container">
-    <div class="row g-3" id="imageList">
+
+    <h1 class="h3">현재 카테고리 : <%= categoryNum %></h1>
+        <div class="container">
+            <li class="nav-item dropdown me-3">
+                <a class="nav-link dropdown-toggle" id="orderDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    카테고리
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                    <% category.forEach(item=> { %>
+                        <li>
+                            <a class="dropdown-item" href="/changeOrder?category=<%= item.id %>">
+                                <%= item.categoryName %>
+                            </a>
+                        </li>
+                        <% }) %>
+                </ul>
+            </li>
+    <div class="row g-3 mt-3" id="imageList">
         <% if (post && post.length> 0) { %>
             <% post.forEach(item=> { %>
                 <!-- .image-item + data-id로 드래그 대상 -->
@@ -238,6 +256,7 @@
                             <form action="/post/delete" method="POST" style="position: absolute; bottom: 10px; right: 10px;"
                                 onsubmit="return confirm('정말로 삭제하시겠습니까?');">
                                 <input type="hidden" name="postId" value="<%= item.id %>">
+                                <input type="hidden" name="currentCategory" value="<%= categoryNum %>">
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     <i class="bi bi-trash"></i>
                                 </button>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- AOS CSS (스크롤 애니메이션) -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 배경 이미지 설정 */
+        body {
+            padding-top: 60px;
+
+        }
+
+        /* AOS 애니메이션 정상 작동하도록 수정 */
+        [data-aos="fade-up"] {
+            transform: translateY(40px) !important;
+            /* 기존 100px → 10px */
+            opacity: 0 !important;
+            /* ✅ AOS가 opacity 1로 변경하도록 설정 */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        [data-aos="fade-up"].aos-animate {
+            transform: translateY(0) !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<% console.log("📌 EJS에서 받은 데이터:", post); %>
+    <%- include('partials/projectNavbar') %>
+
+        <div class="container" style="padding-top: 100px;">
+            <div class="row d-flex justify-content-center">
+                <!-- 이미지 목록 -->
+                <div id="imageList" class="row col-12 mx-5 col-sm-10 col-lg-8">
+                    <% if (post && post.length> 0) { %>
+                        <% post.forEach(item=> { %>
+                            <div class="col-12 my-3">
+                                <div class="card" data-aos="fade-up" data-aos-offset="50" data-aos-duration="600"
+                                    data-aos-easing="ease-out">
+                                    <img src="<%= item.imageUrl %>" class="card-img-top img-fluid rounded-3"
+                                        alt="Uploaded Image">
+                                        
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <p class="mt-3 text-center">No post available.</p>
+                                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+      
+
+        <!-- AOS 스크립트 (애니메이션 효과) -->
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init({
+                duration: 1000, // 애니메이션 지속 시간
+                easing: "ease-in-out",
+                once: false, // ✅ 자연스럽게 반복 실행
+                offset: 80, // ✅ 애니메이션 시작 위치 (너무 빨리 실행되지 않도록)
+                mirror: false // ✅ 스크롤 다시 올려도 애니메이션 반복 방지
+            });
+        </script>
+
+</body>
+
+</html>

@@ -18,11 +18,46 @@ const token = 'myTokenValue';
 const cookieParser = require('cookie-parser');
 app.use(cookieParser()); 
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-const e = require('express');
-// 예: 만약 server.js가 GA 폴더보다 한 단계 더 깊은 곳에 있으면
-const keyFilePath = path.join(__dirname, '../GA', 'western-verve-451515-g9-9b7676beccd7.json');
-const analyticsDataClient = new BetaAnalyticsDataClient({ keyFile: keyFilePath });
+const { GoogleAuth } = require('google-auth-library');
 const propertyId = '479085116';
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n');
+
+
+// 🔥 GoogleAuth 설정
+const auth = new GoogleAuth({
+    credentials, // JSON을 직접 사용 (private_key 변환 없음)
+    scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
+});
+
+
+const analyticsDataClient = new BetaAnalyticsDataClient({ auth });
+async function testGoogleAnalytics() {
+    try {
+        const [response] = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],  // 🔥 최근 7일 데이터
+            metrics: [
+                { name: 'activeUsers' },      // 🔥 활성 사용자 수
+                { name: 'sessions' },         // 🔥 총 방문자(세션) 수
+                { name: 'screenPageViews' }   // 🔥 총 페이지뷰 수
+            ],
+            dimensions: [{ name: 'date' }]   // 🔥 날짜별 데이터
+        });
+
+        console.log('✅ 방문자 수 데이터:', response.rows.map(row => ({
+            date: row.dimensionValues[0].value,   // 날짜
+            activeUsers: row.metricValues[0].value,  // 활성 사용자 수
+            sessions: row.metricValues[1].value,     // 방문자(세션) 수
+            pageViews: row.metricValues[2].value,    // 페이지뷰 수
+        })));
+    } catch (error) {
+        console.error('❌ Google API 호출 오류:', error);
+    }
+}
+
+testGoogleAnalytics();
+
 
 const serializedCookie = serialize('id', 'myCookieValue', {
     httpOnly: true,
@@ -30,21 +65,10 @@ const serializedCookie = serialize('id', 'myCookieValue', {
     maxAge: 24 * 60 * 60,
     path: '/'
 });
-
 // JSON 형식 요청을 파싱하기 위한 설정 (필요하면 추가)
 app.use(express.json());
 const PORT = 3002;
-// app.use(session({
-//     secret: 'my-secret-key',   // 🔥 세션 암호화 키 (랜덤한 값으로 설정!)
-//     resave: false,            // 변경 사항 없을 때도 계속 저장할지 여부 (false 추천)
-//     saveUninitialized: true,   // 초기화되지 않은 세션을 저장할지 여부 (true)
-//     cookie: {
-//         // secure: true,          // 🔥 HTTPS에서만 쿠키 전송 (HTTP에서는 false)
-//         httpOnly: true,        // 🔥 JavaScript에서 쿠키 접근 불가 (XSS 방지)
-//         sameSite: 'strict',    // 🔥 동일 사이트에서만 쿠키 전송 (CSRF 방지)
-//         maxAge: 1000 * 60 * 60 // 1시간 후 세션 만료
-//     }
-// }));
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -56,9 +80,7 @@ const s3 = new S3Client({
     }
 });
 
-app.get('/api/visitors', async (req, res) => {
-    
-});
+
 app.use(express.static(path.join(__dirname, '../public')));
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
@@ -66,12 +88,16 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     res.render('index');
 })
+app.get('/project', async (req, res) => {
+    const query = req.query.id
+        res.render('projectPage', {... await func.getPost(req, res, query)});
+})
 
 app.get('/upload', async (req, res) => {
     if (!req.cookies.id)  {
         return res.redirect('/login');
     }
-    res.render('upload', { ...await func.getPost(req, res, 1), ...await func.getCategory(req, res) });
+    res.render('upload', { ...await func.getPost(req, res, 0, 0, 1), ...await func.getCategory(req, res) });
 })
 
 app.post('/upload/process', upload.single('image'), (req, res) => {
@@ -149,7 +175,7 @@ app.post('/post/delete', (req, res) => {
         if (err) {
             throw err;
         }
-        res.redirect('/upload');
+        res.redirect(`/changeOrder?category=${req.body.currentCategory}`);
     });
 });
 
@@ -204,11 +230,12 @@ app.post('/login/process', (req, res) => {
 })
 
 app.get('/changeOrder', async (req, res) => {
-    if(!req.session.primaryKey){
+    if (!req.cookies.id) {
         return res.redirect('/login');
     }
-    const category = req.query.category;
-    res.render('changeOrder', { ...await func.getPost(req, res, category), ...await func.getCategory(req, res) });
+    const categoryNum = req.query.category;
+    if(categoryNum === 0){ currentCategory= "전체"; } 
+    res.render('changeOrder', { ...await func.getPost(req, res, categoryNum), ...await func.getCategory(req, res), categoryNum });
 })
 
 app.get('/edit', (req, res) => {
@@ -221,7 +248,7 @@ app.get('/edit', (req, res) => {
 app.get('/manage', async (req, res) => {
     if (!req.cookies.id) {
         // 로그인 안 되어 있으면 간단히 안내 문구 출력 (테스트용)
-        return res.send('관리자 페이지입니다. (로그인 안 됨)');
+        return res.redirect('/login');
     } else {
         // 로그인 되어 있으면 GA4 API 호출
         try {
@@ -253,7 +280,7 @@ app.get('/manage', async (req, res) => {
             // manage 페이지 렌더, dailyData 배열을 같이 넘김
             res.render('manage', {
                 ...await func.getCategory(req, res),
-                ...await func.getPost(req, res, 1),
+                ...await func.getPost(req, res, 0, 6, 1),
                 dailyData
             });
         } catch (error) {
