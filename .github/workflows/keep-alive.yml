@@ -1,0 +1,12 @@
+name: Keep Vercel Server Alive
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 5분마다 실행
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep Vercel Alive
+        run: curl -s https://freelancing-git-main-leeminjes-projects.vercel.app/ > /dev/null
