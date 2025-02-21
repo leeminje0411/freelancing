@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
@@ -32,7 +33,20 @@
             transform: translateY(0) !important;
             opacity: 1 !important;
         }
+        .card {
+    border-radius: 0.5rem; /* 카드 기본 둥근 모서리 */
+    overflow: hidden; /* 내부 요소가 넘치지 않도록 설정 */
+    border: none; /* 카드 테두리 제거 */
+}
+
+.card-img-top {
+    border-radius: 0; /* 이미지 모서리를 그대로 유지 */
+    width: 100%; /* 이미지가 카드 안에 꽉 차도록 설정 */
+    object-fit: cover; /* 이미지 비율 유지하면서 꽉 차도록 조정 */
+}
+        
     </style>
+    
 </head>
 
 <body>
