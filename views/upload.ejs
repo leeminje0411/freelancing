@@ -28,36 +28,43 @@
     
     
     <!-- ✅ Bootstrap 모달 -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">이미지 업로드</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <select id="categorySelect" class="form-select mb-2">
-                        <% category.forEach(item=> { %>
-                            <option value="<%= item.id %>">
-                                <%= item.categoryName %>
-                            </option>
-                            <% }) %>
-                        
-                    </select>
-                    <input type="file" id="imageInput" class="form-control mb-2" accept="image/*">
-                    <img id="preview" class="img-fluid d-none" alt="미리보기">
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button class="btn btn-primary" id="uploadButton">업로드</button>
-                </div>
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">이미지 업로드</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <select id="categorySelect" class="form-select mb-2">
+                    <% category.forEach(item=> { %>
+                        <option value="<%= item.id %>">
+                            <%= item.categoryName %>
+                        </option>
+                        <% }) %>
+
+                </select>
+                <input type="file" id="imageInput" class="form-control mb-2" accept="image/*">
+                <img id="preview" class="img-fluid d-none" alt="미리보기">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button class="btn btn-primary" id="uploadButton">업로드</button>
             </div>
         </div>
     </div>
+</div>
 
   
 
-    <!-- ✅ 메인 컨테이너 -->
+    <h1 class="h3">
+        현재 카테고리 :
+        <% category.forEach(item=> { %>
+            <% if (item.id==categoryNum) { %>
+                <%= item.categoryName %>
+                    <% } %>
+                        <% }); %>
+    </h1>
     <div class="container">
         <li class="nav-item dropdown me-3">
             <a class="nav-link dropdown-toggle" id="orderDropdown" role="button" data-bs-toggle="dropdown"
@@ -190,7 +197,7 @@
                         .then(data => {
                             alert("이미지 업로드 성공!");
                            
-                            window.location.href = "/upload";     
+                            window.location.href = `/changeOrder?category=${categorySelect.value}`;     
                         })
                         
                 });

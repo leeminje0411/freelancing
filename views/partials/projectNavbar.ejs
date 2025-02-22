@@ -234,9 +234,14 @@
                     <div class="menu-block">
                         <div class="menu-title" data-target="#projectsSub">Projects</div>
                         <div id="projectsSub" class="sub-list collapse-list">
-                            <a class="sub-item" href="/project?id=1">프로젝트 A</a><br />
-                            <a class="sub-item" href="/project?id=2">프로젝트 B</a><br />
-                            <a class="sub-item" href="/project?id=3">프로젝트 C</a>
+                                <% category.forEach(item=> { %>
+                                    <% if(item.id !==1) { %>
+                                        <a class="sub-item" href="/project?id=<%= item.id %>">
+                                            <%= item.categoryName %>
+                                        </a>
+                                        <br />
+                                        <% } %>
+                                            <% }) %>
                         </div>
                     </div>
 

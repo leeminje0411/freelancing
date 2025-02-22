@@ -85,12 +85,14 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/', async (req, res) => {
+    res.render('index', { ...await func.getCategory(req, res) }
+);
 })
 app.get('/project', async (req, res) => {
     const query = req.query.id
-        res.render('projectPage', {... await func.getPost(req, res, query)});
+    console.log({... await func.getPost(req, res, query, 0, 1)});
+        res.render('projectPage', {... await func.getPost(req, res, query,0, 0, 1), ...await func.getCategory(req, res)});
 })
 
 app.get('/upload', async (req, res) => {
@@ -100,68 +102,96 @@ app.get('/upload', async (req, res) => {
     res.render('upload', { ...await func.getPost(req, res, 0, 0, 1), ...await func.getCategory(req, res) });
 })
 
-app.post('/upload/process', upload.single('image'), (req, res) => {
-    if (!req.cookies.id)  {
+app.post('/upload/process', upload.array('images'), (req, res) => {
+    // 1) 로그인 세션/쿠키 확인
+    if (!req.cookies.id) {
         return res.redirect('/login');
     }
-    // 1) 파일 유무 확인
-    if (!req.file) {
-        return res.status(400).json({ message: '파일이 없습니다.' });
 
+    // 2) 파일 배열 유무 확인
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: '업로드된 파일이 없습니다.' });
     }
-        const category = req.body.category;
 
-    // 2) Sharp 처리(가정: JPEG 품질만 80으로 변경, 원본 크기는 그대로)
-    sharp(req.file.buffer)
-        .jpeg({ quality: 80 })  // 필요하면 .resize({ width: 800 }) 추가
-        .toBuffer()
+    // 3) 카테고리 값
+    const category = req.body.category;
 
-        // 3) Sharp 결과물(버퍼)이 나오면 S3 업로드
-        .then(processedBuffer => {
-            // 업로드될 파일명
-            const fileName = Date.now() + '_' + req.file.originalname;
+    // 4) 각각의 파일을 Sharp 처리 후 S3 업로드
+    //    Promise.all() 사용해 병렬 처리
+    const uploadPromises = req.files.map(file => {
+        // Sharp 변환(예: 품질 80, 필요시 resize)
+        return sharp(file.buffer)
+            .jpeg({ quality: 80 })
+            .toBuffer()
+            .then(processedBuffer => {
+                // S3에 저장할 파일명
+                const fileName = Date.now() + '_' + file.originalname;
 
-            // S3 파라미터
-            const putParams = {
-                Bucket: process.env.S3_BUCKET_NAME,
-                Key: fileName,
-                Body: processedBuffer,       // Sharp로 압축된 버퍼
-                ContentType: 'image/jpeg'    // JPEG 포맷
-            };
+                // 업로드 파라미터
+                const putParams = {
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: fileName,
+                    Body: processedBuffer,
+                    ContentType: 'image/jpeg'
+                };
 
-            return s3.send(new PutObjectCommand(putParams))
-                .then(() => ({ fileName }));
-            // 다음 then()으로 넘기기 위해 { fileName }만 반환
-        })
+                // S3 업로드
+                return s3.send(new PutObjectCommand(putParams))
+                    .then(() => {
+                        // 업로드 완료 시 S3 URL 생성
+                        const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
 
-        // 4) DB 저장
-        .then(({ fileName }) => {
-            // S3 링크 구성
-            const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+                        return imageUrl;  // 나중에 DB 저장 위해 반환
+                    });
+            })
+            .catch(err => {
+                throw new Error('Sharp 변환 에러: ' + err.message);
+            });
+    });
 
-            const sql = `
-        INSERT INTO post (imageUrl, category, sortOrder)
-        SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
-        FROM post
-        WHERE category = ?
-      `;
-            db.query(sql, [imageUrl, category, category], (dbErr) => {
-                if (dbErr) {
-                    console.error('DB 저장 에러:', dbErr);
-                    return res.status(500).json({ message: 'DB 저장 에러' });
-                }
+    // 5) 모든 파일의 업로드가 끝나면 DB에 기록
+    Promise.all(uploadPromises)
+        .then(imageUrls => {
+            // imageUrls: 변환 및 업로드가 끝난 S3 URL들의 배열
 
-                // 성공 응답
-                res.json({
-                    message: '이미지(Sharp) 업로드 및 DB 저장 성공',
-                    imageUrl: imageUrl
+            // DB INSERT 처리(파일 개수만큼 레코드 생성)
+            // 예: 각각 INSERT OR 여러 건을 한 번에 INSERT (원하는 방식대로)
+            // 간단히 forEach로 개별 INSERT 예시:
+            let completed = 0; // 처리된 insert 횟수
+            let hasError = false;
+
+            imageUrls.forEach(url => {
+                const sql = `
+          INSERT INTO post (imageUrl, category, sortOrder)
+          SELECT ?, ?, COALESCE(MIN(sortOrder), 0) - 1
+          FROM post
+          WHERE category = ?
+        `;
+                db.query(sql, [url, category, category], (dbErr) => {
+                    if (dbErr) {
+                        hasError = true;
+                        console.error('DB INSERT 에러:', dbErr);
+                        // 실패했어도 나머지 insert는 계속 시도
+                    }
+                    completed++;
+                    // 모든 insert가 끝나면 결과 반환
+                    if (completed === imageUrls.length) {
+                        if (hasError) {
+                            return res.status(500).json({
+                                message: '일부 DB INSERT 처리 중 에러 발생'
+                            });
+                        }
+                        // 전부 성공 시
+                        res.json({
+                            message: '모든 이미지 업로드 및 DB 저장 성공',
+                            urls: imageUrls
+                        });
+                    }
                 });
             });
         })
-
-        // 5) 에러 처리
         .catch(err => {
-            console.error('이미지 처리/업로드 에러:', err);
+            console.error('업로드 처리 중 에러:', err);
             res.status(500).json({ message: '이미지 처리/업로드 실패', error: err.message });
         });
 });
@@ -179,12 +209,16 @@ app.post('/post/delete', (req, res) => {
     });
 });
 
+
 app.post('/post/updateOrder', (req, res) => {
-    if (!req.cookies.id)  {
+    // 세션/쿠키 검사 (예: 로그인 여부)
+    if (!req.cookies.id) {
+        // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
         return res.redirect('/login');
     }
+
+    // 클라이언트에서 넘어온 [{id: '3', sortOrder: 1}, ...] 데이터
     const orderData = req.body;
-    // 예: [{id: '3', sortOrder: 1}, {id: '5', sortOrder: 2}, ...]
 
     // Promise.all로 병렬 업데이트
     const updates = orderData.map(item => {
@@ -193,8 +227,11 @@ app.post('/post/updateOrder', (req, res) => {
                 'UPDATE post SET sortOrder = ? WHERE id = ?',
                 [item.sortOrder, item.id],
                 (err, result) => {
-                    if (err) reject(err);
-                    else resolve(result);
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
                 }
             );
         });
@@ -202,6 +239,7 @@ app.post('/post/updateOrder', (req, res) => {
 
     Promise.all(updates)
         .then(() => {
+            // 모든 업데이트가 성공하면
             res.json({ success: true });
         })
         .catch(err => {
@@ -209,7 +247,6 @@ app.post('/post/updateOrder', (req, res) => {
             res.status(500).json({ success: false, message: 'DB 업데이트 실패' });
         });
 });
-
 app.get('/login', (req, res) => {
     res.render('login');
 })
@@ -233,9 +270,12 @@ app.get('/changeOrder', async (req, res) => {
     if (!req.cookies.id) {
         return res.redirect('/login');
     }
+    let order = 0;
+    
     const categoryNum = req.query.category;
-    if(categoryNum === 0){ currentCategory= "전체"; } 
-    res.render('changeOrder', { ...await func.getPost(req, res, categoryNum), ...await func.getCategory(req, res), categoryNum });
+    console.log('categoryNum : ',categoryNum);
+    if (categoryNum==1){order=1}
+    res.render('changeOrder', { ...await func.getPost(req, res, categoryNum,order,0), ...await func.getCategory(req, res), categoryNum });
 })
 
 app.get('/edit', (req, res) => {
@@ -247,40 +287,47 @@ app.get('/edit', (req, res) => {
 
 app.get('/manage', async (req, res) => {
     if (!req.cookies.id) {
-        // 로그인 안 되어 있으면 간단히 안내 문구 출력 (테스트용)
         return res.redirect('/login');
     } else {
-        // 로그인 되어 있으면 GA4 API 호출
         try {
             const [response] = await analyticsDataClient.runReport({
                 property: `properties/${propertyId}`,
                 dateRanges: [
-                    { startDate: '7daysAgo', endDate: 'today' },
-                    // ↑ 원하는 기간(예: startDate='2023-09-01', endDate='2023-09-07')
+                    { startDate: '30daysAgo', endDate: 'today' }
                 ],
                 metrics: [
                     { name: 'activeUsers' }
                 ],
                 dimensions: [
                     { name: 'date' }
-                    // ↑ 날짜별로 쪼개기
                 ]
             });
 
-            // rows 배열을 순회하며 { date, count } 형태로 가공
+            // rows 배열 → { date: '23-09-19', count: '123' } 형태로 가공
             const dailyData = response?.rows?.map(row => {
                 const dateStr = row.dimensionValues?.[0]?.value;  // 예: '20230919'
                 const countStr = row.metricValues?.[0]?.value;    // 예: '123'
+
+                // dateStr → 'YYYYMMDD' 파싱
+                const year = dateStr.slice(0, 4);    // '2023'
+                const month = dateStr.slice(4, 6);   // '09'
+                const day = dateStr.slice(6, 8);     // '19'
+                // 연도 2자리 줄임
+                const shortYear = year.slice(2);     // '23'
+                const formattedDate = `${shortYear}-${month}-${day}`; // '23-09-19'
+
                 return {
-                    date: dateStr,
+                    date: formattedDate,
                     count: countStr
                 };
             }) || [];
-            console.log(dailyData)
-            // manage 페이지 렌더, dailyData 배열을 같이 넘김
+
+            console.log(dailyData);
+
+            // EJS 렌더링
             res.render('manage', {
                 ...await func.getCategory(req, res),
-                ...await func.getPost(req, res, 0, 6, 1),
+                ...await func.getPost(req, res, 1, 15, 1),
                 dailyData
             });
         } catch (error) {
@@ -289,7 +336,16 @@ app.get('/manage', async (req, res) => {
         }
     }
 });
+app.use((req, res, next) => {
+    // 404 상태 코드 설정
+    res.status(404);
 
+    // 1) 단순 문자열 응답
+    // res.send('페이지를 찾을 수 없습니다.');
+
+    // 2) 혹은 ejs 등 템플릿으로 404 전용 페이지 렌더
+    res.render('');
+});
 app.listen(PORT, () => {
     console.log('Server is running on http://localhost:', PORT);
 })
