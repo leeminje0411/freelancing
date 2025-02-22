@@ -22,7 +22,11 @@ const { GoogleAuth } = require('google-auth-library');
 const propertyId = '479085116';
 const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n');
-
+const cors = require('cors');
+app.use(cors({
+    origin: '*', // 혹은 특정 도메인만 허용 가능
+    credentials: true
+}));
 
 // 🔥 GoogleAuth 설정
 const auth = new GoogleAuth({
@@ -104,6 +108,11 @@ app.get('/upload', async (req, res) => {
 
 app.post('/upload/process', upload.array('images'), (req, res) => {
     // 1) 로그인 세션/쿠키 확인
+
+    console.log("✅ 업로드 요청 받음");
+    console.log("요청한 파일 목록:", req.files);
+    console.log("요청한 카테고리:", req.body.category);
+    console.log("클라이언트 IP:", req.ip);
     if (!req.cookies.id) {
         return res.redirect('/login');
     }
