@@ -262,7 +262,7 @@ app.post('/login/process', (req, res) => {
             return res.status(400).json({ message: '로그인 실패' });
         }
         res.setHeader('Set-Cookie', serializedCookie);
-        res.redirect('/upload');
+        res.redirect('/manage');
     });
 })
 
