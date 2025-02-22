@@ -24,7 +24,7 @@ const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n');
 const cors = require('cors');
 app.use(cors({
-    origin: '*', // 혹은 특정 도메인만 허용 가능
+    origin: 'https://freelancing-git-main-leeminjes-projects.vercel.app/', // 혹은 특정 도메인만 허용 가능
     credentials: true
 }));
 
