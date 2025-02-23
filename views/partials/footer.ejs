@@ -1,34 +1,114 @@
-<style>
-    .footer {
-        margin: 0;
-        font-size: 12px;
-    }
-    .footerMother{
-        margin-left: 10px;
-        margin-bottom: 10px
-    }
-
-           /* 미디어쿼리로 로고/햄버거 간격 */
-        @media (min-width: 768px) {
-            .footerMother{
-                margin-left: 20px;
-                /* 로고 왼쪽 여백 */
-                margin-bottom: 20px
-            }
-
+ <style>
+        /* 부모 컨테이너 */
+        .footerMother {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            /* 모바일(기본): 세로 배치 */
+            align-items: flex-start;
+            margin-left: 10px;
+            margin-bottom: 10px;
         }
-        p{
+
+        .footerMother img {
+            width: 70px;
+            margin-bottom: 8px;
+            /* 모바일: 이미지와 텍스트 사이 여백 */
+        }
+
+        /* 전체 텍스트 감싸는 컨테이너 */
+        .footerText {
+            /* 모바일: 기본 block(세로) */
+        }
+
+        /* 문단 공통 스타일 */
+        .footer {
+            margin: 0;
+            font-size: 12px;
             color: #042b6e !important;
         }
 
+        /* 그룹 1: “스튜디오 오븐 / 주소” (항상 세로) */
+        .verticalGroup {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            /* “스튜디오 오븐” / “주소” 사이 간격 8px */
+            margin-bottom: 8px;
+            /* 모바일에서 아래 그룹과 간격 8px */
+        }
 
-</style>
-<div class="footerMother"style="position: absolute; bottom:0; left: 0;" >
-    <img src="/uploads/mainlogo" alt="" style="width: 100px;" />
-    <div>
-        <p class="footer">스튜디오 오븐 studio.Oven [ Interior&Design ]</p>
-        <p class="footer">주소 ㅣ 서울 강남구 논현로132길 11, 302호</p>
-        <p class="footer">TEL ㅣ 02- 6448 - 0308</p>
-        <p class="footer">FAXㅣ 02 - 6448 - 0309</p>
+        /* 그룹 2: “TEL / FAX” (모바일에서는 세로 배치) */
+        .horizontalGroup {
+            display: flex;
+            flex-direction: column;
+            /* 모바일: 세로 배치 */
+            gap: 8px;
+            /* TEL / FAX 사이 간격 8px */
+        }
+
+        /* 데스크톱(768px 이상) 스타일 */
+        @media (min-width: 768px) {
+            .footerMother {
+                flex-direction: row;
+                /* 데스크톱: 가로 배치 */
+                align-items: flex-end;
+                margin-left: 20px;
+                margin-bottom: 20px;
+            }
+
+            .footerMother img {
+                margin-bottom: 0;
+                margin-right: 20px;
+                /* 이미지와 텍스트 사이 가로 여백 */
+            }
+
+            .footerText {
+                display: flex;
+                flex-direction: row;
+                /* 그룹들을 가로로 배치 */
+                gap: 8px;
+                /* 그룹 사이 간격 8px */
+                align-items: flex-end;
+            }
+
+            /* 그룹 1(스튜디오 오븐/주소)는 세로 유지 */
+            .verticalGroup {
+                flex-direction: column;
+                margin-bottom: 0;
+                /* 데스크톱에서는 margin-bottom 제거 */
+                gap: 8px;
+            }
+
+            /* 그룹 2(TEL/FAX)는 데스크톱에서 가로 배치 및 간격 확대 */
+            .horizontalGroup {
+                flex-direction: row;
+                /* 가로 배치 */
+                gap: 30px;
+                /* TEL과 FAX 사이 간격 30px */
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="footerMother">
+        <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/vertical.png" alt="logo" />
+        <div class="footerText">
+            <!-- 그룹 1: 스튜디오 오븐 / 주소 (세로 배치) -->
+            <div class="verticalGroup">
+                <p class="footer">스튜디오 오븐 studio.Oven [Interior&Design]</p>
+                <p class="footer">주소 ㅣ 서울 강남구 논현로 132길 11, 302호</p>
+            </div>
+            <!-- 그룹 2: TEL / FAX -->
+            <div class="horizontalGroup">
+                <p class="footer">TEL ㅣ 02-6448-0308</p>
+                <p class="footer">FAX ㅣ 02-6448-0309</p>
+            </div>
+        </div>
     </div>
-</div>
+
+

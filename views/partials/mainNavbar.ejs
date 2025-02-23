@@ -3,70 +3,83 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-
+    <title>오버레이 투명 + 외부 클릭 닫힘</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <style>
-        /* ======================================
-       1) 공통 스타일
-    ====================================== */
         body {
+            background-image: url('https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
             color: #042b6e;
-            /* 기본 글자색 */
+            margin: 0;
         }
 
-        /* 로고와 햄버거가 정확히 수직 중앙 정렬되도록 수정 */
+        /* ================================
+           1) 오프캔버스 백드롭 투명 처리
+        ================================ */
+        .offcanvas-backdrop {
+            background-color: transparent !important;
+            /* 투명화 */
+        }
+
+        /* 혹은 필요하다면 opacity도 강제:
+           .offcanvas-backdrop.show {
+               opacity: 1 !important;
+           }
+        */
+
+        .navbar-toggler-icon {
+            display: none;
+        }
+
         .navbar-brand,
         .navbar-toggler {
             align-self: center !important;
-            /* flex 항목 각각 수직 중앙 */
         }
 
         .navbar-brand img {
             display: block;
-            /* inline -> block으로 바꿔야 baseline 문제 없음 */
             width: 250px;
-            /* 원하는 폭 */
         }
 
-        /* 햄버거 아이콘 (2줄) */
+        /* 햄버거 버튼 (2줄) */
         .navbar-toggler {
             position: relative;
             z-index: 1050;
             border: none;
             padding: 0.5rem;
+            margin-right: 20px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            cursor: pointer;
         }
 
-        .navbar-toggler-icon {
-            background-image: none !important;
-            /* Bootstrap 기본 배경 제거 */
-            width: 25px;
-            height: 4px;
+        .hamburger-bar {
+            display: block;
+            width: 30px;
+            height: 5px;
+            margin-bottom: 5px;
             background-color: #042b6e;
-            display: inline-block;
-            position: relative;
-            border-radius: 2px;
+            border-radius: 3px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: center;
         }
 
-        .navbar-toggler-icon::before {
-            content: "";
-            position: absolute;
-            top: 8px;
-            left: 0;
-            width: 25px;
-            height: 4px;
-            background-color: #042b6e;
-            border-radius: 2px;
+        /* 햄버거 → X */
+        .navbar-toggler.open .top-bar {
+            transform: translateY(5px) rotate(45deg);
         }
 
-        /* ======================================
-       2) 추가 패딩, 글자 크기 설정
-    ====================================== */
-        .cheif {
-            margin-bottom: 10px;
+        .navbar-toggler.open .bottom-bar {
+            transform: translateY(-5px) rotate(-45deg);
         }
 
         .mb-0 {
@@ -77,19 +90,15 @@
         .menu-title {
             color: #042b6e;
             font-size: 20px;
-            margin-bottom: 20px;
         }
 
-        /* ======================================
-       3) 반응형에서 로고/햄버거 간격
-    ====================================== */
+        .cheif {
+            margin-bottom: 10px;
+        }
+
         @media (min-width: 768px) {
             .navbar-brand {
                 margin-left: 20px;
-            }
-
-            .navbar-toggler {
-                margin-right: 20px;
             }
 
             .cheif {
@@ -97,51 +106,81 @@
             }
         }
 
-        /* 오프캔버스 배경이미지 */
+        /* 오프캔버스 사이드바 (폭, 위치) */
         .offcanvas-custom-bg {
             background: url('https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/sidebar.png') no-repeat center center / cover;
         }
 
-        /* 오프캔버스 내용 수직 정렬 */
         .offcanvas-body {
             overflow: visible !important;
-            /* 네모 등이 튀어나가도 보이도록 */
             padding: 0;
         }
 
-        /* 메인 메뉴 블록 (네모 + 제목 + 구분선) */
+        #offcanvasRight.offcanvas-end {
+            width: 20% !important;
+            max-width: none !important;
+            margin-right: 0 !important;
+        }
+
+        /* menu-block: 왼쪽 네모 + 줄 → 글자까지만 */
         .menu-block {
             position: relative;
-            border-bottom: 2px solid #042b6e;
             margin-bottom: 2rem;
             padding-bottom: 2rem;
             padding-left: 80px;
-            /* 네모 폭 확보 */
         }
 
         .menu-block::before {
             content: "";
             position: absolute;
-            top: 8px;
+            top: 5px;
             left: 0;
             width: 50px;
-            /* 네모 가로 폭 */
             height: 20px;
             background: #042b6e;
+            z-index: 2;
+        }
+
+        .menu-block::after {
+            content: "";
+            position: absolute;
+            display: inline-block;
+            left: 0;
+            right: 0;
+            width: 60%;
+            bottom: 0;
+            height: 1px;
+            background: #042b6e;
+            z-index: 1;
         }
 
         .menu-title {
+            position: relative;
             display: inline-block;
             font-weight: bold;
-            transition: transform 0.3s ease;
+            font-size: 20px;
             cursor: pointer;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+            transition: transform 0.3s ease;
+            z-index: 3;
         }
 
         .menu-title:hover {
             transform: scale(1.05);
         }
 
-        /* 서브 항목(세로 배치) */
+        .menu-title::after {
+            content: "";
+            position: absolute;
+            left: 100%;
+            bottom: 0;
+            width: 9999px;
+            height: 2px;
+            background: #fff;
+            z-index: 3;
+        }
+
         .sub-list {
             margin-left: 0;
         }
@@ -173,27 +212,82 @@
             transform: scaleX(1);
         }
 
-        /* Projects/Contact 토글 */
         .collapse-list {
             display: none;
-            /* 기본 숨김 */
         }
 
         .collapse-list.show {
             display: block;
-            /* 표시 */
         }
 
-        /* ======================================
-       4) 모바일에서 오프캔버스 폭 줄이기
-         - max-width: 768px 이하일 때
-         - offcanvas-end 가 화면 절반만
-    ====================================== */
-        @media (max-width: 768px) {
-            #offcanvasRight.offcanvas-end {
-                width: 70% !important;
-                /* 전체 화면의 50% 너비만 */
-                max-width: none !important;
+        /* 푸터 (예시) */
+        .footerMother {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .footerMother img {
+            width: 70px;
+            margin-bottom: 8px;
+        }
+
+        .footerText {}
+
+        .footer {
+            margin: 0;
+            font-size: 12px;
+            color: #042b6e !important;
+        }
+
+        .verticalGroup {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .horizontalGroup {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .footerMother {
+                flex-direction: row;
+                align-items: flex-end;
+                margin-left: 20px;
+                margin-bottom: 20px;
+            }
+
+            .footerMother img {
+                margin-bottom: 0;
+                margin-right: 20px;
+            }
+
+            .footerText {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+                align-items: flex-end;
+            }
+
+            .verticalGroup {
+                flex-direction: column;
+                margin-bottom: 0;
+                gap: 8px;
+            }
+
+            .horizontalGroup {
+                flex-direction: row;
+                gap: 30px;
+                align-items: center;
             }
         }
     </style>
@@ -201,27 +295,27 @@
 
 <body>
     <nav class="navbar navbar-light bg-transparent">
-        <!-- container-fluid → flex 컨테이너, 수직 중앙 정렬을 위해 align-items-center 추가 -->
         <div class="container-fluid d-flex align-items-center justify-content-between" style="padding: 0;">
             <!-- 로고 -->
             <a class="navbar-brand fw-bold" href="/">
-                <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/logo.png" />
+                <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/logo.png" style="width: 200px;"
+                    alt="로고" />
             </a>
 
             <!-- 햄버거 버튼 -->
-            <button id="menuToggle" class="navbar-toggler d-block ms-auto me-1 d-flex align-items-center" type="button">
-                <span class="navbar-toggler-icon"></span>
+            <button id="menuToggle" class="navbar-toggler d-block ms-auto" type="button">
+                <span class="hamburger-bar top-bar"></span>
+                <span class="hamburger-bar bottom-bar"></span>
             </button>
 
-            <!-- 오프캔버스 -->
-            <div class="offcanvas offcanvas-end offcanvas-custom-bg" data-bs-backdrop="false" tabindex="-1"
+            <!-- data-bs-backdrop="true" + .offcanvas-backdrop → 투명 처리 -->
+            <div class="offcanvas offcanvas-end offcanvas-custom-bg" data-bs-backdrop="true" tabindex="-1"
                 id="offcanvasRight">
                 <div class="offcanvas-header mt-5">
                     <h5 class="offcanvas-title"></h5>
                 </div>
-
                 <div class="offcanvas-body d-flex flex-column">
-                    <!-- About us: 기본 펼쳐짐 -->
+                    <!-- About us -->
                     <div class="menu-block">
                         <div class="menu-title">About us</div>
                         <div class="sub-list">
@@ -231,22 +325,21 @@
                         </div>
                     </div>
 
-                    <!-- Projects: 클릭 시 서브 항목 보이기/숨기기 -->
+                    <!-- Projects -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#projectsSub">Projects</div>
                         <div id="projectsSub" class="sub-list collapse-list">
-                    <% category.forEach(item=> { %>
-                        <% if(item.id !==1) { %>
-                            <a class="sub-item" href="/project?id=<%= item.id %>">
-                                <%= item.categoryName %>
-                            </a>
-                            <br />
-                            <% } %>
-                                <% }) %>
+                            <% category.forEach(item=> { %>
+                                <% if(item.id !==1) { %>
+                                    <a class="sub-item" href="/project?id=<%= item.id %>">
+                                        <%= item.categoryName %>
+                                    </a><br />
+                                    <% } %>
+                                        <% }) %>
                         </div>
                     </div>
 
-                    <!-- Contact: 클릭 시 서브 항목 보이기/숨기기 -->
+                    <!-- Contact -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#contactSub">Contact</div>
                         <div id="contactSub" class="sub-list collapse-list">
@@ -258,12 +351,8 @@
 
                     <!-- 하단 문구 -->
                     <div class="mt-auto text-center p-2 cheif">
-                        <p class="mb-0">
-                            대표자 | 서정일 Jeong-il Seo / 이강민 Kang-min Lee
-                        </p>
-                    <p class="mb-0 redirect-target">
-                        사업자등록번호 | 323 - 20 - 02200
-                    </p>
+                        <p class="mb-0">대표자 | 서정일 Jeong-il Seo / 이강민 Kang-min Lee</p>
+                        <p class="mb-0 redirect-target">사업자등록번호 | 323 - 20 - 02200</p>
                     </div>
                 </div>
             </div>
@@ -271,56 +360,74 @@
         </div>
     </nav>
 
+    <!-- 푸터 -->
+    <div class="footerMother">
+        <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/vertical.png" alt="footerLogo" />
+        <div class="footerText">
+            <div class="verticalGroup">
+                <p class="footer">
+                    스튜디오 오븐 studio.Oven [Interior&Design]
+                </p>
+                <p class="footer">
+                    주소 ㅣ 서울 강남구 논현로 132길 11, 302호
+                </p>
+            </div>
+            <div class="horizontalGroup">
+                <p class="footer">TEL ㅣ 02-6448-0308</p>
+                <p class="footer">FAX ㅣ 02-6448-0309</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const menuToggle = document.getElementById("menuToggle");
             const offcanvasElement = document.getElementById("offcanvasRight");
             const offcanvasMenu = new bootstrap.Offcanvas(offcanvasElement);
 
-            // 햄버거 열고 닫기
+            // 클릭 → 햄버거(X) 전환 + 오프캔버스 열고 닫기
             menuToggle.addEventListener("click", function () {
                 if (offcanvasElement.classList.contains("show")) {
                     offcanvasMenu.hide();
+                    this.classList.remove("open");
                 } else {
                     offcanvasMenu.show();
+                    this.classList.add("open");
                 }
             });
 
-            // Projects/Contact → 제목 클릭 시 서브 항목 show/hide
-            document
-                .querySelectorAll(".menu-title[data-target]")
-                .forEach(title => {
-                    title.addEventListener("click", function () {
-                        const targetId = this.getAttribute("data-target");
-                        const targetEl = document.querySelector(targetId);
-                        if (!targetEl) return;
-
-                        targetEl.classList.toggle("show");
-                    });
+            // Projects/Contact → 제목 클릭 시 서브 항목 열기/닫기
+            document.querySelectorAll(".menu-title[data-target]").forEach(title => {
+                title.addEventListener("click", function () {
+                    const targetId = this.getAttribute("data-target");
+                    const targetEl = document.querySelector(targetId);
+                    if (!targetEl) return;
+                    targetEl.classList.toggle("show");
                 });
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+            });
+
+            // 숨은 관리자 페이지 이동 (5번 클릭)
             let clickCount = 0;
             let timer;
-
-            document.querySelector(".redirect-target").addEventListener("click", function () {
-                clickCount++;
-                clearTimeout(timer);
-
-                timer = setTimeout(() => {
-                    clickCount = 0;
-                }, 800); // 800ms 내에 7번 클릭해야 리디렉트됨
-
-                if (clickCount >= 5) {
-                    window.location.href = "/manage";
-                }
-            });
+            const redirectEl = document.querySelector(".redirect-target");
+            if (redirectEl) {
+                redirectEl.addEventListener("click", function () {
+                    clickCount++;
+                    clearTimeout(timer);
+                    timer = setTimeout(() => {
+                        clickCount = 0;
+                    }, 800);
+                    if (clickCount >= 5) {
+                        window.location.href = "/manage";
+                    }
+                });
+            }
         });
     </script>
 </body>
 
 </html>
+
