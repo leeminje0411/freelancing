@@ -3,11 +3,17 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>오버레이 투명 + 외부 클릭 닫힘</title>
+    <title>오프캔버스 반응형 너비 + 투명 오버레이 + 햄버거 복귀 + 슬라이드</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+    <!-- 뷰포트 메타 (모바일 대응) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <style>
+        /* ================================
+           0) 기본 전역 스타일
+        ================================ */
         body {
             background-image: url('https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/background.png');
             background-size: cover;
@@ -18,19 +24,10 @@
             margin: 0;
         }
 
-        /* ================================
-           1) 오프캔버스 백드롭 투명 처리
-        ================================ */
+        /* 오버레이 투명화 (외부 클릭 닫힘 유지) */
         .offcanvas-backdrop {
             background-color: transparent !important;
-            /* 투명화 */
         }
-
-        /* 혹은 필요하다면 opacity도 강제:
-           .offcanvas-backdrop.show {
-               opacity: 1 !important;
-           }
-        */
 
         .navbar-toggler-icon {
             display: none;
@@ -46,14 +43,16 @@
             width: 250px;
         }
 
-        /* 햄버거 버튼 (2줄) */
+        /* ================================
+           1) 햄버거 버튼 (2줄 → X)
+        ================================ */
         .navbar-toggler {
             position: relative;
             z-index: 1050;
             border: none;
             padding: 0.5rem;
-            margin-right: 20px;
-
+            /* 기본 margin-right:0 → 768px 이상일 때 20px */
+            margin-right: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -73,13 +72,24 @@
             transform-origin: center;
         }
 
-        /* 햄버거 → X */
+        /* 열렸을 때 → X자 */
         .navbar-toggler.open .top-bar {
             transform: translateY(5px) rotate(45deg);
         }
 
         .navbar-toggler.open .bottom-bar {
             transform: translateY(-5px) rotate(-45deg);
+        }
+
+        /* 데스크톱에서 좀 더 우측 */
+        @media (min-width: 768px) {
+            .navbar-brand {
+                margin-left: 20px;
+            }
+
+            .navbar-toggler {
+                margin-right: 20px;
+            }
         }
 
         .mb-0 {
@@ -96,17 +106,30 @@
             margin-bottom: 10px;
         }
 
-        @media (min-width: 768px) {
-            .navbar-brand {
-                margin-left: 20px;
-            }
+        /* ================================
+           2) 오프캔버스 폭
+        ================================ */
+        #offcanvasRight.offcanvas-end {
+            width: 19% !important;
+            /* 기본(>900px)일 때 약 19% */
+            max-width: none !important;
+            margin-right: 0 !important;
+        }
 
-            .cheif {
-                margin-bottom: 20px;
+        /* 501px ~ 900px: 30% */
+        @media (min-width: 501px) and (max-width: 900px) {
+            #offcanvasRight.offcanvas-end {
+                width: 30% !important;
             }
         }
 
-        /* 오프캔버스 사이드바 (폭, 위치) */
+        /* 500px 이하: 60% */
+        @media (max-width: 500px) {
+            #offcanvasRight.offcanvas-end {
+                width: 60% !important;
+            }
+        }
+
         .offcanvas-custom-bg {
             background: url('https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/sidebar.png') no-repeat center center / cover;
         }
@@ -116,13 +139,9 @@
             padding: 0;
         }
 
-        #offcanvasRight.offcanvas-end {
-            width: 20% !important;
-            max-width: none !important;
-            margin-right: 0 !important;
-        }
-
-        /* menu-block: 왼쪽 네모 + 줄 → 글자까지만 */
+        /* ================================
+           3) 왼쪽 네모 + 선 (글자까지만)
+        ================================ */
         .menu-block {
             position: relative;
             margin-bottom: 2rem;
@@ -170,6 +189,7 @@
             transform: scale(1.05);
         }
 
+        /* 글자까지만 보이도록 오른쪽은 흰색 박스로 덮기 */
         .menu-title::after {
             content: "";
             position: absolute;
@@ -212,83 +232,19 @@
             transform: scaleX(1);
         }
 
+        /* ================================
+           4) 슬라이드 애니메이션
+        ================================ */
         .collapse-list {
-            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            /* 스르륵 애니메이션 */
         }
 
         .collapse-list.show {
-            display: block;
-        }
-
-        /* 푸터 (예시) */
-        .footerMother {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-left: 10px;
-            margin-bottom: 10px;
-        }
-
-        .footerMother img {
-            width: 70px;
-            margin-bottom: 8px;
-        }
-
-        .footerText {}
-
-        .footer {
-            margin: 0;
-            font-size: 12px;
-            color: #042b6e !important;
-        }
-
-        .verticalGroup {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .horizontalGroup {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        @media (min-width: 768px) {
-            .footerMother {
-                flex-direction: row;
-                align-items: flex-end;
-                margin-left: 20px;
-                margin-bottom: 20px;
-            }
-
-            .footerMother img {
-                margin-bottom: 0;
-                margin-right: 20px;
-            }
-
-            .footerText {
-                display: flex;
-                flex-direction: row;
-                gap: 8px;
-                align-items: flex-end;
-            }
-
-            .verticalGroup {
-                flex-direction: column;
-                margin-bottom: 0;
-                gap: 8px;
-            }
-
-            .horizontalGroup {
-                flex-direction: row;
-                gap: 30px;
-                align-items: center;
-            }
+            max-height: 500px;
+            /* 충분히 큰 값 */
         }
     </style>
 </head>
@@ -302,30 +258,33 @@
                     alt="로고" />
             </a>
 
-            <!-- 햄버거 버튼 -->
+            <!-- 햄버거 버튼 (2줄) -->
             <button id="menuToggle" class="navbar-toggler d-block ms-auto" type="button">
                 <span class="hamburger-bar top-bar"></span>
                 <span class="hamburger-bar bottom-bar"></span>
             </button>
 
-            <!-- data-bs-backdrop="true" + .offcanvas-backdrop → 투명 처리 -->
+            <!-- Offcanvas (투명 오버레이, 외부 클릭 시 닫힘) -->
             <div class="offcanvas offcanvas-end offcanvas-custom-bg" data-bs-backdrop="true" tabindex="-1"
                 id="offcanvasRight">
                 <div class="offcanvas-header mt-5">
                     <h5 class="offcanvas-title"></h5>
                 </div>
                 <div class="offcanvas-body d-flex flex-column">
-                    <!-- About us -->
+                    <!-- About us (기본 열림 => .show) -->
                     <div class="menu-block">
-                        <div class="menu-title">About us</div>
-                        <div class="sub-list">
+                        <div class="menu-title" data-target="#aboutSub">
+                            About us
+                        </div>
+                        <!-- show로 시작하면 펼쳐진 상태. 클릭시 접힘 -->
+                        <div id="aboutSub" class="sub-list collapse-list show" style="max-height:500px;">
                             <a class="sub-item" href="#">studio.Oven</a><br />
                             <a class="sub-item" href="#">history</a><br />
                             <a class="sub-item" href="#">organization</a>
                         </div>
                     </div>
 
-                    <!-- Projects -->
+                    <!-- Projects (기본 닫힘) -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#projectsSub">Projects</div>
                         <div id="projectsSub" class="sub-list collapse-list">
@@ -339,7 +298,7 @@
                         </div>
                     </div>
 
-                    <!-- Contact -->
+                    <!-- Contact (기본 닫힘) -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#contactSub">Contact</div>
                         <div id="contactSub" class="sub-list collapse-list">
@@ -360,25 +319,6 @@
         </div>
     </nav>
 
-    <!-- 푸터 -->
-    <div class="footerMother">
-        <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/vertical.png" alt="footerLogo" />
-        <div class="footerText">
-            <div class="verticalGroup">
-                <p class="footer">
-                    스튜디오 오븐 studio.Oven [Interior&Design]
-                </p>
-                <p class="footer">
-                    주소 ㅣ 서울 강남구 논현로 132길 11, 302호
-                </p>
-            </div>
-            <div class="horizontalGroup">
-                <p class="footer">TEL ㅣ 02-6448-0308</p>
-                <p class="footer">FAX ㅣ 02-6448-0309</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
     </script>
@@ -388,7 +328,7 @@
             const offcanvasElement = document.getElementById("offcanvasRight");
             const offcanvasMenu = new bootstrap.Offcanvas(offcanvasElement);
 
-            // 클릭 → 햄버거(X) 전환 + 오프캔버스 열고 닫기
+            // 햄버거 버튼 (X <-> 햄버거) + 오프캔버스 열고 닫기
             menuToggle.addEventListener("click", function () {
                 if (offcanvasElement.classList.contains("show")) {
                     offcanvasMenu.hide();
@@ -399,17 +339,24 @@
                 }
             });
 
-            // Projects/Contact → 제목 클릭 시 서브 항목 열기/닫기
+            // 오프캔버스 닫힐 때 → 햄버거 복귀
+            offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
+                menuToggle.classList.remove("open");
+            });
+
+            // About us/Projects/Contact → 클릭 시 슬라이드 토글
             document.querySelectorAll(".menu-title[data-target]").forEach(title => {
                 title.addEventListener("click", function () {
                     const targetId = this.getAttribute("data-target");
                     const targetEl = document.querySelector(targetId);
                     if (!targetEl) return;
+
+                    // 슬라이드 애니메이션: show 클래스를 토글
                     targetEl.classList.toggle("show");
                 });
             });
 
-            // 숨은 관리자 페이지 이동 (5번 클릭)
+            // 숨은 관리자 페이지 (5번 클릭)
             let clickCount = 0;
             let timer;
             const redirectEl = document.querySelector(".redirect-target");
@@ -430,4 +377,3 @@
 </body>
 
 </html>
-
