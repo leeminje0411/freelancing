@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 const func = require('../lib/func');
 require('dotenv').config()
 // const s3 = require('../lib/s3');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const sharp = require('sharp');
 const { serialize } = require('cookie');
 const token = 'myTokenValue';
@@ -27,7 +27,13 @@ app.use(cors({
     origin: 'https://freelancing-git-main-leeminjes-projects.vercel.app/', // 혹은 특정 도메인만 허용 가능
     credentials: true
 }));
-
+function extractS3Key(imageUrl) {
+    // 예: https://mybucket.s3.ap-northeast-2.amazonaws.com/파일명.jpg
+    // -> "파일명.jpg"
+    const parts = imageUrl.split('.com/');
+    if (parts.length < 2) return null;
+    return parts[1];
+}
 // 🔥 GoogleAuth 설정
 const auth = new GoogleAuth({
     credentials, // JSON을 직접 사용 (private_key 변환 없음)
@@ -206,15 +212,43 @@ app.post('/upload/process', upload.array('images'), (req, res) => {
 });
 
 app.post('/post/delete', (req, res) => {
-    if (!req.cookies.id)  {
+    // 세션/쿠키 확인
+    if (!req.cookies.id) {
         return res.redirect('/login');
     }
-    const { postId } = req.body;
-    db.query('DELETE FROM post WHERE id = ?', [postId], (err, result) => {
-        if (err) {
-            throw err;
+    const { postId, currentCategory } = req.body;
+
+    // 1) DB에서 imageUrl 가져오기
+    db.query('SELECT imageUrl FROM post WHERE id = ?', [postId], async (findErr, rows) => {
+        if (findErr) throw findErr;
+        if (!rows || rows.length === 0) {
+            // 이미 삭제된 게시물 등
+            return res.redirect(`/changeOrder?category=${currentCategory}`);
         }
-        res.redirect(`/changeOrder?category=${req.body.currentCategory}`);
+
+        const imageUrl = rows[0].imageUrl;
+        const s3Key = extractS3Key(imageUrl);
+
+        // 2) S3에서 파일 삭제 시도
+        if (s3Key) {
+            try {
+                await s3.send(new DeleteObjectCommand({
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: s3Key
+                }));
+                console.log('✅ S3 삭제 성공:', s3Key);
+            } catch (deleteErr) {
+                console.error('❌ S3 삭제 실패:', deleteErr);
+                // 삭제 실패해도 DB에서는 삭제할지, 중단할지는 정책에 따라 결정
+            }
+        }
+
+        // 3) DB에서 post 레코드 삭제
+        db.query('DELETE FROM post WHERE id = ?', [postId], (err) => {
+            if (err) throw err;
+            // 최종 완료 후 리다이렉트
+            res.redirect(`/changeOrder?category=${currentCategory}`);
+        });
     });
 });
 
@@ -276,6 +310,7 @@ app.post('/login/process', (req, res) => {
 })
 
 app.get('/changeOrder', async (req, res) => {
+   
     if (!req.cookies.id) {
         return res.redirect('/login');
     }
@@ -284,7 +319,7 @@ app.get('/changeOrder', async (req, res) => {
     const categoryNum = req.query.category;
     console.log('categoryNum : ',categoryNum);
     if (categoryNum==1){order=1}
-    res.render('changeOrder', { ...await func.getPost(req, res, categoryNum,order,0), ...await func.getCategory(req, res), categoryNum });
+    res.render('changeOrder', { ...await func.getPost(req, res, categoryNum, 0, order), ...await func.getCategory(req, res), categoryNum });
 })
 
 app.get('/edit', (req, res) => {
