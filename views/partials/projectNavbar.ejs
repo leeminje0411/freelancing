@@ -1,251 +1,270 @@
-<style>
-    /* ======================================
-       1) 상단 고정 + 그림자 + 여백
-    ====================================== */
-    body {
-        color: #042b6e;
-        /* 네비게이션이 고정되므로, 
-         본문 내용이 가려지지 않게 위쪽 여백 추가 */
-        padding-top: 70px;
-        /* 네비 높이에 맞게 조절 (예: 70px) */
-    }
+<!DOCTYPE html>
+<html lang="ko">
 
-    /* 고정된 네비에 그림자 추가 → 경계 확실 */
-    .navbar-fixed-top {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        /* 약간의 그림자 */
-        /* 배경이 완전히 투명이라면, 
-         .bg-transparent를 유지하거나 원하는 배경색 지정 */
-    }
+<head>
+    <meta charset="UTF-8" />
+    <title>Sticky Nav with Shadow</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
-    /* 로고와 햄버거 수직 중앙 정렬 */
-    .navbar-brand,
-    .navbar-toggler {
-        align-self: center !important;
-    }
-
-    .navbar-brand img {
-        display: block;
-        width: 250px;
-    }
-
-    /* 2줄짜리 햄버거 아이콘 */
-    .navbar-toggler {
-        position: relative;
-        z-index: 1050;
-        border: none;
-        padding: 0.5rem;
-    }
-
-    .navbar-toggler-icon {
-        background-image: none !important;
-        /* Bootstrap 기본 배경 제거 */
-        width: 25px;
-        height: 4px;
-        background-color: #042b6e;
-        display: inline-block;
-        position: relative;
-        border-radius: 2px;
-    }
-
-    .navbar-toggler-icon::before {
-        content: "";
-        position: absolute;
-        top: 8px;
-        left: 0;
-        width: 25px;
-        height: 4px;
-        background-color: #042b6e;
-        border-radius: 2px;
-    }
-
-    /* ======================================
-       2) 부가 스타일
-    ====================================== */
-    .cheif {
-        margin-bottom: 10px;
-    }
-
-    .mb-0 {
-        color: #042b6e;
-        font-size: 12px;
-    }
-
-    .menu-title {
-        color: #042b6e;
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-
-    /* 반응형에서 로고/햄버거 간격 */
-    @media (min-width: 768px) {
-        .navbar-brand {
-            margin-left: 20px;
+    <style>
+        /* ================================
+       0) 기본 전역 스타일
+    ================================ */
+        body {
+            margin: 0;
+            color: #042b6e;
+            /* (테스트용) 컨텐츠가 길어야 스크롤됨 */
+            min-height: 200vh;
         }
 
+        /* 오버레이 투명화 (외부 클릭 닫힘 유지) */
+        .offcanvas-backdrop {
+            background-color: transparent !important;
+        }
+
+        /* ================================
+       (추가) 햄버거 버튼 애니메이션
+    ================================ */
         .navbar-toggler {
-            margin-right: 20px;
+            position: relative;
+            z-index: 1050;
+            border: none;
+            padding: 0.5rem;
+            margin-right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            cursor: pointer;
         }
 
-        .cheif {
-            margin-bottom: 20px;
+        .hamburger-bar {
+            display: block;
+            width: 30px;
+            height: 5px;
+            margin-bottom: 5px;
+            background-color: #042b6e;
+            border-radius: 3px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: center;
         }
-    }
 
-    /* 오프캔버스 배경이미지 */
-    .offcanvas-custom-bg {
-        background: url('/uploads/sidebar.png') no-repeat center center / cover;
-    }
+        /* 열렸을 때 → X자 */
+        .navbar-toggler.open .top-bar {
+            transform: translateY(5px) rotate(45deg);
+        }
 
-    /* 오프캔버스 내용 수직 정렬 + 여백 제거 */
-    .offcanvas-body {
-        overflow: visible !important;
-        /* 네모 등이 튀어나가도 보이도록 */
-        padding: 0;
-    }
+        .navbar-toggler.open .bottom-bar {
+            transform: translateY(-5px) rotate(-45deg);
+        }
 
-    /* 메인 메뉴 블록 (네모 + 제목 + 구분선) */
-    .menu-block {
-        position: relative;
-        border-bottom: 2px solid #042b6e;
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        padding-left: 80px;
-        /* 네모 폭 확보 */
-    }
+        /* ================================
+       Sticky & Shadow
+    ================================ */
+        /* nav를 상단 고정 */
+        .navbar-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            /* 다른 요소들보다 위에 오도록 */
+            transition: box-shadow 0.3s;
+        }
 
-    .menu-block::before {
-        content: "";
-        position: absolute;
-        top: 8px;
-        left: 0;
-        width: 50px;
-        /* 네모 가로 폭 */
-        height: 20px;
-        background: #042b6e;
-    }
+        /* 스크롤 시 그림자 효과 */
+        .navbar-scrolled {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            /* 필요에 따라 gradient 효과를 원하신다면 background에 그라데이션 추가도 가능 */
+        }
 
-    .menu-title {
-        display: inline-block;
-        font-weight: bold;
-        transition: transform 0.3s ease;
-        cursor: pointer;
-    }
-
-    .menu-title:hover {
-        transform: scale(1.05);
-    }
-
-    /* 서브 항목(세로 배치) */
-    .sub-list {
-        margin-left: 0;
-    }
-
-    .sub-item {
-        display: inline-block;
-        margin-bottom: 8px;
-        color: #042b6e;
-        text-decoration: none;
-        position: relative;
-        overflow: hidden;
-        transition: color 0.3s ease;
-    }
-
-    .sub-item::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-        width: 100%;
-        height: 2px;
-        background-color: #042b6e;
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease;
-    }
-
-    .sub-item:hover::after {
-        transform: scaleX(1);
-    }
-
-    /* Projects/Contact 토글 */
-    .collapse-list {
-        display: none;
-        /* 기본 숨김 */
-    }
-
-    .collapse-list.show {
-        display: block;
-        /* 표시 */
-    }
-
-    /* 모바일에서 오프캔버스 폭 줄이기: 70% */
-    @media (max-width: 768px) {
+        /* ================================
+       2) 오프캔버스 폭 (반응형 적용)
+    ================================ */
         #offcanvasRight.offcanvas-end {
-            width: 70% !important;
+            width: 18% !important;
+            /* 기본 (PC) 너비 */
             max-width: none !important;
+            margin-right: 0 !important;
         }
-    }
-</style>
+
+        /* 중간 해상도 (501px ~ 900px): width 30% */
+        @media (max-width: 900px) and (min-width: 501px) {
+            #offcanvasRight.offcanvas-end {
+                width: 30% !important;
+            }
+        }
+
+        /* 모바일 해상도 (500px 이하): width 50% */
+        @media (max-width: 500px) {
+            #offcanvasRight.offcanvas-end {
+                width: 50% !important;
+            }
+        }
+
+        /* ================================
+       3) 메뉴 스타일 조정
+    ================================ */
+        .menu-block {
+            position: relative;
+            display: inline-block;
+            width: fit-content;
+            /* 가장 긴 서브메뉴 길이에 맞춤 */
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            padding-left: 25%;
+            /* 네모박스와 겹치지 않도록 여백 확보 */
+            white-space: nowrap;
+        }
+
+        /* 선을 menu-block의 길이에 맞춤 */
+        .menu-block::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: #042b6e;
+            z-index: 1;
+        }
+
+        /* 왼쪽 네모박스 */
+        .menu-block::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 30%;
+            height: 20px;
+            background: #042b6e;
+            z-index: 2;
+            transform: translateX(-150%);
+            transition: transform 0.5s ease;
+        }
+
+        /* 네모박스 호버 시 등장 */
+        .menu-block:hover::before {
+            transform: translateX(0);
+        }
+
+        /* 메뉴 제목 (메인 카테고리) */
+        .menu-title {
+            position: relative;
+            display: block;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            color: #042b6e;
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            transition: transform 0.3s ease;
+            z-index: 3;
+        }
+
+        /* 메뉴 제목 아래 흰색 덮개 */
+        .menu-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: #fff;
+            z-index: 3;
+        }
+
+        /* 서브 메뉴 리스트 (메인카테고리 아래로 배치) */
+        .sub-list {
+            display: inline-block;
+            width: fit-content;
+            margin-left: 0;
+            margin-top: 4px;
+        }
+
+        /* 서브 아이템 */
+        .sub-item {
+            display: inline-block;
+            margin-bottom: 8px;
+            color: #042b6e;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        /* 서브 아이템 호버 시 밑줄 애니메이션 */
+        .sub-item::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 2px;
+            background-color: #042b6e;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .sub-item:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* 대표자/사업자등록번호 폰트 & 색상 */
+        .cheif p {
+            font-size: 0.8rem;
+            color: #042b6e;
+            margin-bottom: 0.3rem;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- 
-       .navbar-light .bg-transparent → 
-       .navbar-fixed-top (추가) → 상단 고정 + 그림자
-       background: 투명 or 원하는 색 (유지)
-  -->
-    <nav class="navbar navbar-fixed-top" style="background-color: white !important;">
-        <div class="container-fluid d-flex align-items-center justify-content-between" style="padding: 0;">
+    <!-- 상단 고정 + 그림자 효과를 위해 .navbar-sticky 클래스를 추가 -->
+    <nav class="navbar navbar-light bg-white navbar-sticky">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
             <!-- 로고 -->
             <a class="navbar-brand fw-bold" href="/">
-            <img src="/uploads/logo.png" alt="Studio Oven" style="width:200px;" />
+                <img src="https://linkup-mj12270411.s3.ap-northeast-2.amazonaws.com/logo.png" style="width: 200px;"
+                    alt="로고" />
             </a>
-
             <!-- 햄버거 버튼 -->
-            <button id="menuToggle" class="navbar-toggler d-block ms-auto me-1 d-flex align-items-center" type="button">
-                <span class="navbar-toggler-icon"></span>
+            <button id="menuToggle" class="navbar-toggler d-block ms-auto" type="button">
+                <span class="hamburger-bar top-bar"></span>
+                <span class="hamburger-bar bottom-bar"></span>
             </button>
 
-            <!-- 오프캔버스 -->
-            <div class="offcanvas offcanvas-end offcanvas-custom-bg" data-bs-backdrop="false" tabindex="-1"
+            <!-- Offcanvas 메뉴 -->
+            <div class="offcanvas offcanvas-end offcanvas-custom-bg" data-bs-backdrop="true" tabindex="-1"
                 id="offcanvasRight">
                 <div class="offcanvas-header mt-5">
                     <h5 class="offcanvas-title"></h5>
                 </div>
-
-                <div class="offcanvas-body d-flex flex-column">
-                    <!-- About us: 기본 펼쳐짐 -->
+                <div class="offcanvas-body d-flex flex-column" style="padding:0">
+                    <!-- About us -->
                     <div class="menu-block">
-                        <div class="menu-title">About us</div>
-                        <div class="sub-list">
+                        <div class="menu-title" data-target="#aboutSub">About us</div>
+                        <div id="aboutSub" class="sub-list collapse-list show">
                             <a class="sub-item" href="#">studio.Oven</a><br />
                             <a class="sub-item" href="#">history</a><br />
                             <a class="sub-item" href="#">organization</a>
                         </div>
                     </div>
 
-                    <!-- Projects: 클릭 시 서브 항목 보이기/숨기기 -->
+                    <!-- Projects -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#projectsSub">Projects</div>
                         <div id="projectsSub" class="sub-list collapse-list">
-                                <% category.forEach(item=> { %>
-                                    <% if(item.id !==1) { %>
-                                        <a class="sub-item" href="/project?id=<%= item.id %>">
-                                            <%= item.categoryName %>
-                                        </a>
-                                        <br />
-                                        <% } %>
-                                            <% }) %>
+                            <% category.forEach(item=> { %>
+                                <% if(item.id !==1) { %>
+                                    <a class="sub-item" href="/project?id=<%= item.id %>">
+                                        <%= item.categoryName %>
+                                    </a><br />
+                                    <% } %>
+                                        <% }) %>
                         </div>
                     </div>
 
-                    <!-- Contact: 클릭 시 서브 항목 보이기/숨기기 -->
+                    <!-- Contact -->
                     <div class="menu-block">
                         <div class="menu-title" data-target="#contactSub">Contact</div>
                         <div id="contactSub" class="sub-list collapse-list">
@@ -257,21 +276,13 @@
 
                     <!-- 하단 문구 -->
                     <div class="mt-auto text-center p-2 cheif">
-                        <p class="mb-0">
-                            대표자 | 서정일 Jeong-il Seo / 이강민 Kang-min Lee
-                        </p>
-                        <p class="mb-0">
-                            사업자등록번호 | 323 - 20 - 02200
-                        </p>
+                        <p>대표자 | 서정일 Jeong-il Seo / 이강민 Kang-min Lee</p>
+                        <p class="redirect-target">사업자등록번호 | 323 - 20 - 02200</p>
                     </div>
                 </div>
             </div>
-            <!-- offcanvas 끝 -->
         </div>
     </nav>
-
-    <!-- 컨텐츠 예시 (스크롤 테스트용) -->
-
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -281,25 +292,41 @@
             const offcanvasElement = document.getElementById("offcanvasRight");
             const offcanvasMenu = new bootstrap.Offcanvas(offcanvasElement);
 
-            // 햄버거 열고 닫기
+            // 햄버거 버튼 (X <-> 햄버거) + 오프캔버스 열고 닫기
             menuToggle.addEventListener("click", function () {
                 if (offcanvasElement.classList.contains("show")) {
                     offcanvasMenu.hide();
+                    this.classList.remove("open");
                 } else {
                     offcanvasMenu.show();
+                    this.classList.add("open");
                 }
             });
 
-            // Projects/Contact → 제목 클릭 시 서브 항목 show/hide
-            document
-                .querySelectorAll(".menu-title[data-target]")
-                .forEach(title => {
-                    title.addEventListener("click", function () {
-                        const targetId = this.getAttribute("data-target");
-                        const targetEl = document.querySelector(targetId);
-                        if (!targetEl) return;
-                        targetEl.classList.toggle("show");
-                    });
+            // 오프캔버스 닫힐 때 → 햄버거 복귀
+            offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
+                menuToggle.classList.remove("open");
+            });
+
+            // 슬라이드 토글 (서브메뉴 열림/닫힘)
+            document.querySelectorAll(".menu-title[data-target]").forEach(title => {
+                title.addEventListener("click", function () {
+                    const targetEl = document.querySelector(this.getAttribute("data-target"));
+                    if (targetEl) targetEl.classList.toggle("show");
                 });
+            });
+
+            // 스크롤하면 navbar에 그림자 주기
+            const navbar = document.querySelector('.navbar-sticky');
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 0) {
+                    navbar.classList.add('navbar-scrolled');
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                }
+            });
         });
     </script>
+</body>
+
+</html>
