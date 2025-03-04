@@ -105,6 +105,20 @@ app.get('/project', async (req, res) => {
         res.render('projectPage', {... await func.getPost(req, res, query,0, 0, 1), ...await func.getCategory(req, res)});
 })
 
+app.get('/studio-oven', async (req, res) => {
+    res.render('studio-oven', { ...await func.getCategory(req, res) });
+})
+
+
+
+
+
+
+
+
+
+
+// 이하 관리자
 app.get('/upload', async (req, res) => {
     if (!req.cookies.id)  {
         return res.redirect('/login');
@@ -388,7 +402,7 @@ app.use((req, res, next) => {
     // res.send('페이지를 찾을 수 없습니다.');
 
     // 2) 혹은 ejs 등 템플릿으로 404 전용 페이지 렌더
-    res.render('');
+    res.render('404');
 });
 app.listen(PORT, () => {
     console.log('Server is running on http://localhost:', PORT);
