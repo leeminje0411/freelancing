@@ -6,6 +6,37 @@
 */ %>
 
 <style>
+  /* ---------------------
+     1) 웹폰트 font-display: swap
+  ---------------------- */
+  @font-face {
+    font-family: 'GmarketSansLight';
+    src: url('/fonts/GmarketSansTTFLight.ttf') format('truetype');
+    font-weight: 300; 
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('/fonts/GmarketSansTTFMedium.ttf') format('truetype');
+    font-weight: 500; 
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'GmarketSansBold';
+    src: url('/fonts/GmarketSansTTFBold.ttf') format('truetype');
+    font-weight: 700; 
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'NotoSansCJKkr';
+    src: url('/fonts/NotoSansCJKkr-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
   /* 햄버거 버튼 포커스 시 테두리 제거 */
   .navbar-toggler:focus,
@@ -14,6 +45,7 @@
     box-shadow: none !important;
   }
 
+  /* isMain에 따른 배경 */
   <% if (isMain) { %>
     body {
       background-image: url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//compressed-background.webp');
@@ -22,7 +54,7 @@
       background-repeat: no-repeat;
       min-height: 100vh;
     }
-    /* navbar는 기본: bg-transparent */
+    /* navbar는 bg-transparent */
   <% } else { %>
     .navbar-sticky {
       position: sticky;
@@ -36,17 +68,24 @@
       box-shadow: 0 15px 15px -10px rgba(0, 0, 0, 0.2);
     }
   <% } %>
+
+  /* (참고) Supabase 캐싱은 본 코드에서 설정 불가. 
+     CDN이나 Supabase 서버 설정에서 별도 Cache-Control 세팅 필요. */
 </style>
 
 <!-- ============= 3) Navbar HTML 통합 ============ -->
 <nav class="navbar navbar-light 
   <%= isMain ? 'bg-transparent' : 'navbar-sticky' %>">
   <div class="container-fluid d-flex align-items-center justify-content-between">
-    <!-- 로고 -->
+    <!-- 로고 (width/height 명시) -->
     <a class="navbar-brand fw-bold" href="/">
-      <img src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//logo.webp"
-           style="width: 200px;"
-           alt="로고" />
+      <img 
+        src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//logo.webp"
+        alt="로고" 
+        width="200" 
+        height="60" 
+        style="width: 200px; height: auto;"
+      />
     </a>
 
     <!-- 햄버거 버튼 -->
@@ -67,7 +106,7 @@
           <div class="menu-title" data-target="#aboutSub">About us</div>
           <div id="aboutSub" class="sub-list collapse-list show">
             <a class="sub-item" href="/about-us">studio.Oven</a><br />
-             <a class="sub-item" href="/studio-oven">ci</a><br />
+            <a class="sub-item" href="/studio-oven">ci</a><br />
             <a class="sub-item" href="#">history</a><br />
             <a class="sub-item" href="#">organization</a>
           </div>
@@ -95,12 +134,15 @@
           </div>
         </div>
 
-        <!-- 오픈채팅 바로가기 -->
+        <!-- 오픈채팅 바로가기 (width/height 명시) -->
         <div class="kakao-btn">
           <a href="https://open.kakao.com/o/sPJjPEih">
             <img 
               src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//kakao.webp"
               alt="오픈채팅 바로가기"
+              width="200"
+              height="60"
+              style="width: 200px; height: auto;"
             />
           </a>
         </div>
