@@ -12,12 +12,6 @@
     font-style: light;
   }
 
-  @font-face {
-    font-family: 'NotoSansCJKkr';
-    src: url('/fonts/NotoSansCJKkr-Regular.otf') format('opentype');
-    font-weight: light;
-    font-style: light;
-  }
 
   .cjk {
       font-family: 'NotoSansCJKkr', sans-serif !important;
