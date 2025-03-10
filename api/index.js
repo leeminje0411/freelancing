@@ -96,20 +96,75 @@ app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
 
 app.get('/', async (req, res) => {
-    res.render('index', { ...await func.getCategory(req, res) }
-);
-})
+  try {
+    // getCategory로부터 { category: [...] } 형태
+    const { category } = await func.getCategory(req, res);
+
+    // index.ejs 렌더 시 isMain: true, category: ...
+    res.render('index', {
+      isMain: true,
+      category  // == category: category
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 app.get('/project', async (req, res) => {
-    const query = req.query.id
-    console.log({... await func.getPost(req, res, query, 0, 1)});
-        res.render('projectPage', {... await func.getPost(req, res, query,0, 0, 1), ...await func.getCategory(req, res)});
-})
+  try {
+    const query = req.query.id;
+
+    // Post 데이터 & Category 데이터 각각 호출
+    const postResult = await func.getPost(req, res, query, 0, 0, 1);
+    const categoryResult = await func.getCategory(req, res);
+
+    // render 시 isMain: false로 지정 + 나머지 spread
+    res.render('projectPage', {
+      isMain: false,
+      ...postResult,
+      ...categoryResult
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 
 app.get('/studio-oven', async (req, res) => {
-    res.render('studio-oven', { ...await func.getCategory(req, res) });
+      try {
+    // getCategory로부터 { category: [...] } 형태
+    const { category } = await func.getCategory(req, res);
+
+    // index.ejs 렌더 시 isMain: true, category: ...
+    res.render('studio-oven', {
+      isMain: false,
+      category  // == category: category
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 })
 
+app.get('/about-us', async (req, res) => {
+      try {
+    // getCategory로부터 { category: [...] } 형태
+    const { category } = await func.getCategory(req, res);
 
+    // index.ejs 렌더 시 isMain: true, category: ...
+    res.render('About', {
+      isMain: false,
+      category  // == category: category
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+})
 
 
 

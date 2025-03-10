@@ -1,68 +1,192 @@
-.side-menu {
-    position: fixed;
-    top: 0;
-    right: -250px;
-    /* 처음에는 화면 밖 */
-    width: 250px;
-    height: 100%;
-    background-color: #fff;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    padding-top: 60px;
-    transition: right 0.3s ease-in-out;
-}
+  @font-face {
+    font-family: 'GmarketSansLight';
+    src: url('/fonts/GmarketSansTTFLight.ttf') format('truetype');
+    font-weight: 300; 
+    font-style: normal;
+  }
 
-.side-menu ul {
-    list-style: none;
-    padding: 0;
-}
+  @font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('/fonts/GmarketSansTTFMedium.ttf') format('truetype');
+    font-weight: 0; 
+    font-style: light;
+  }
 
-.side-menu ul li {
-    padding: 15px;
-    text-align: center;
-}
+  @font-face {
+    font-family: 'NotoSansCJKkr';
+    src: url('/fonts/NotoSansCJKkr-Regular.otf') format('opentype');
+    font-weight: light;
+    font-style: light;
+  }
 
-.side-menu ul li a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-}
+  .cjk {
+      font-family: 'NotoSansCJKkr', sans-serif !important;
+  }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    background: none;
+  .menu-block {
+      font-family: 'GmarketSansMedium', sans-serif;
+  }
+  .sub-item {
+      font-family: 'GmarketSansLight', sans-serif;
+  }
+
+  body {
+    margin: 0;
+    color: #042b6e;
+  }
+  .offcanvas-backdrop {
+    background-color: transparent !important;
+  }
+  .offcanvas-custom-bg {
+    background: url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//navigation-background.webp')
+                center center / cover no-repeat;
+  }
+  .navbar-toggler {
+    position: relative;
+    z-index: 1050;
     border: none;
+    padding: 0.5rem;
+    margin-right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
     cursor: pointer;
-}
+  }
+  .hamburger-bar {
+    display: block;
+    width: 30px;
+    height: 5px;
+    margin-bottom: 5px;
+    background-color: #042b6e;
+    border-radius: 3px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+  }
+  .navbar-toggler.open .top-bar {
+    transform: translateY(5px) rotate(45deg);
+  }
+  .navbar-toggler.open .bottom-bar {
+    transform: translateY(-5px) rotate(-45deg);
+  }
 
-/* ✅ 햄버거 메뉴 활성화 시 화면에 나타나도록 설정 */
-.side-menu.show {
-    right: 0;
-}
-
-/* ✅ 모바일에서만 햄버거 버튼 표시 */
-@media (max-width: 991px) {
-    .navbar-toggler {
-        display: block;
+  #offcanvasRight.offcanvas-end {
+    width: 18% !important;
+    max-width: none !important;
+    margin-right: 0 !important;
+  }
+  @media (max-width: 900px) and (min-width: 501px) {
+    #offcanvasRight.offcanvas-end {
+      width: 30% !important;
     }
-
-    #navMenu {
-        display: none;
-        /* 모바일에서는 기본 네비게이션 숨김 */
+  }
+  @media (max-width: 500px) {
+    #offcanvasRight.offcanvas-end {
+      width: 50% !important;
     }
-}
+  }
 
-/* ✅ PC에서는 기본 메뉴 표시 */
-@media (min-width: 992px) {
-    .navbar-nav {
-        display: flex;
-    }
+  .menu-block {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 25%;
+    white-space: nowrap;
+  }
+  .menu-block::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: #042b6e;
+    z-index: 1;
+  }
+  .menu-block::before {
+    content: "";
+    position: absolute;
+    top: 5px; left: 0;
+    width: 30%; height: 20px;
+    background: #042b6e;
+    z-index: 2;
+    transform: translateX(-150%);
+    transition: transform 0.5s ease;
+  }
+  .menu-block:hover::before {
+    transform: translateX(0);
+  }
+  .menu-title {
+    position: relative;
+    display: block;
+    font-weight: bold;
+    font-size: 23px;
+    cursor: pointer;
+    color: #042b6e;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    transition: transform 0.3s ease;
+    z-index: 3;
+  }
+  .menu-title::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 2px;
+    background: #fff;
+    z-index: 3;
+  }
+  .sub-list {
+    display: inline-block;
+    width: fit-content;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+  .sub-item {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #042b6e;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  .sub-item::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -1px;
+    width: 100%; height: 2px;
+    background-color: #042b6e;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .sub-item:hover::after {
+    transform: scaleX(1);
+  }
+  .collapse-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .collapse-list.show {
+    max-height: 500px;
+  }
+  .cheif p {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+    color: #042b6e;
+  }
 
-    .side-menu {
-        display: none;
-        /* PC에서는 햄버거 메뉴 숨김 */
-    }
-}
+  /* 오픈채팅 배너 스타일 */
+  .kakao-btn {
+    display: block;
 
+    /* Contact / Location과 같은 라인에 맞추기 위해 menu-block의 padding-left와 동일하게 */
+    margin-bottom: 2rem; /* 아래 간격 조정 */
+  }
+  .kakao-btn img {
+    display: block; 
+    width: 200px; /* 이미지 크기 조절 (원하는 크기로 수정 가능) */
+    cursor: pointer;
+  }
