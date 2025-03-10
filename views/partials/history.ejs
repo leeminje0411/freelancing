@@ -1,0 +1,152 @@
+<!-- historyContent.ejs -->
+
+<!-- 상단 타이틀 영역 -->
+<div style="
+  width: 100%;
+  text-align: center;
+
+  position: relative; /* 아래 그라데이션 절대배치 위해 */
+  z-index: 10;
+">
+  <!-- Company History : G마켓 산스 Bold -->
+  <h2
+    style="
+      font-family: 'GmarketSansBold', sans-serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: #042b6e;
+      margin-bottom: 0.5rem;
+    "
+  >
+    Company History
+  </h2>
+
+  <!-- (1) 수평바 -->
+  <div style="
+    width: 100%;
+    height: 2px;
+    background-color: #ccc;
+    position: relative;
+  "></div>
+
+</div>
+
+<!-- 메인 섹션 (그라데이션 배경 + 좌우 50:50) -->
+<section
+  id="historyContainer"
+  style="
+    display: flex;
+    width: 100vw;
+    height: 120vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+  "
+>
+  <style>
+    /* Pretendard Variable 로드 */
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+
+    /* 이미지 위치 - 데스크톱: 80%, 모바일: 10% */
+    #leftSection img {
+      position: absolute;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      object-fit: contain;
+      object-position: 80% center;
+    }
+    @media (max-width: 768px) {
+      #leftSection img {
+        object-position: 10% center !important;
+      }
+    }
+
+    /* 리스트 스타일(.history-list) */
+    .history-list {
+      margin-top: 2rem;
+      padding-left: 1.2rem;
+    }
+    .history-list li {
+      list-style-type: disc;
+      margin: 2rem 0;
+      font-family: 'Pretendard Variable', sans-serif; /* Pretendard Light */
+      font-weight: 300;
+      color: #000;
+    }
+
+    /* 우선순위(ul reset 방지) */
+    #rightSection ul {
+      list-style: disc;
+      margin: 0; 
+      padding: 0;
+    }
+  </style>
+
+  <!-- (1) 왼쪽 섹션(배경 이미지 + 가운데 선) -->
+  <div
+    id="leftSection"
+    style="
+      width: 50%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid #042b6e; /* 가운데 세로 구분선 */
+    "
+  >
+    <img
+      src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//history.png"
+      alt="History Background"
+    />
+  </div>
+
+  <!-- (2) 오른쪽 섹션 (텍스트/리스트) -->
+  <div
+    id="rightSection"
+    style="
+      width: 50%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      left: 10%;
+      align-items: center;
+      color: #000;
+    "
+  >
+    <div
+      class="text-wrapper"
+      style="
+        width: 50%;
+      "
+    >
+      <!-- (리스트 영역) -->
+      <ul class="history-list">
+        <li>studio.Oven 개업</li>
+        <li>박은영 필라테스</li>
+        <li>마모스 카페</li>
+        <li>미술프 미용실</li>
+        <li>영종도 오늘카페</li>
+        <li>춘천 쿠우쿠우</li>
+        <li>버드독 펍</li>
+        <li>sk 렌터카</li>
+        <li>여의도 포케153</li>
+        <li>수원 포인네일</li>
+        <li>삼청당 무실점</li>
+        <li>부천 삼겹당</li>
+        <li>무실 간호학원</li>
+        <li>원주 르브층 애견카페 리뉴얼 공사</li>
+        <li>서초 솔피코타고</li>
+        <li>삼청당 서여의도점</li>
+        <li>천호 진미오뎅</li>
+        <li>영종보쌈 묵둥직영점</li>
+        <li>평택 노작진성아구찜</li>
+        <li>이태원 프리즘클럽</li>
+        <li>강남 애니파크 프랜차이즈 가맹사업부</li>
+        <li>강남 애니파크 오픈 공사</li>
+        <!-- 필요시 더 추가... -->
+      </ul>
+    </div>
+  </div>
+</section>

@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>스튜디오 오븐</title>
+
+  <!-- 메타 태그 -->
   <meta name="description" content="스튜디오 오븐 — 다양한 인테리어 프로젝트를 소개합니다.">
   <meta name="keywords" content="스튜디오, 오븐, studio.oven, 인테리어, 만화카페, 디자인 스튜디오, 인테리어 공사, 인테리어 시공">
   <meta property="og:title" content="studio.Oven">
   <meta property="og:description" content="스튜디오 오븐 — 인테리어 공사 전문 업체">
   <meta property="og:url" content="https://freelancing-git-main-leeminjes-projects.vercel.app/">
   <meta property="og:image" content="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//mainlogo.webp">
+
   <!-- 메인페이지 지정 -->
   <link rel="canonical" href="https://www.dubbingnow.com/" />
   <link rel="icon" href="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//favicon.webp">
@@ -19,8 +22,13 @@
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
 
-  <!-- 예시: G마켓 & Pretendard 사용 (실제로는 프로젝트 상황에 맞게 세팅) -->
+  <header>
+    <%- include('partials/mainNavbar') %>
+  </header>
+
   <style>
     @font-face {
       font-family: 'GmarketSansLight';
@@ -40,11 +48,8 @@
       font-weight: 700; 
       font-style: normal;
     }
-    /* Pretendard (CDN 예시)
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-       → 실제 상황에 맞게 수정하세요.
-    */
 
+    /* 기본 글꼴 설정 */
     body {
       margin: 0;
       font-family: 'GmarketSansLight', sans-serif;
@@ -54,30 +59,26 @@
       margin: 0;
       padding: 0;
     }
+
+    /* 폰트 계열 */
     .title-medium {
       font-family: 'GmarketSansMedium', sans-serif;
     }
     .title-bold {
       font-family: 'GmarketSansBold', sans-serif;
     }
-    .pretendard-bold {
-      font-weight: 700;
-    }
-    .pretendard-medium {
-      font-weight: 500;
-    }
-    .pretendard-light {
-      font-weight: 300;
-    }
+    .pretendard-bold { font-weight: 700; }
+    .pretendard-medium { font-weight: 500; }
+    .pretendard-light { font-weight: 300; }
 
-    /* ----- 공통 배경 사이즈 조정용 ----- */
+    /* 배경 사이즈 조정 */
     .bg-cover {
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
     }
 
-    /* ----- 메뉴 underline & active-pill ----- */
+    /* 메뉴 underline & active-pill */
     .menu-item {
       position: relative;
       display: inline-block;
@@ -85,6 +86,7 @@
       color: #042b6e;
       transition: color 0.3s ease;
       padding: 2px 6px;
+      cursor: pointer; /* 탭 전환 */
     }
     .menu-item::after {
       content: "";
@@ -101,7 +103,7 @@
       width: 100%;
     }
     .active-pill {
-      background-color: #042b6e; 
+      background-color: #042b6e;
       color: #ffffff !important;
       border-radius: 9999px;
       padding: 0.3rem 1rem;
@@ -111,240 +113,240 @@
       display: none;
     }
 
-    /* ----- 카드 ----- */
+    /* 카드 */
     .custom-card {
-      /* 폭을 제한하고 가운데 정렬 */
       max-width: 220px;
       margin: 0 auto;
-
-      /* 모서리: 좌상/우상/우하 크게, 좌하만 적게 */
       border-radius: 30px 30px 30px 10px;
-
-      /* 그림자: 아래쪽을 좀 더 강조 */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15), 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15),
                   0 1px 5px rgba(0,0,0,0.05);
-
       background-color: #fff;
       border: none;
     }
-
     .stairs-bg-opacity {
-      background: 
-        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), 
+      background:
+        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
         url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//opacity-stairs.webp');
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
     }
-
-    /* 선을 좀 더 두껍게(height:3px) & margin 위로 조금 */
     .card-title-line {
-      width: 70%; 
-      height: 3px; 
+      width: 70%;
+      height: 3px;
       background-color: #042b6e;
       margin: 0.5rem auto 1rem;
     }
+
+    /* About(기본) / History / Organization 전환 */
+    #aboutSection {
+      display: block; /* 초기 표시 */
+    }
+
+    /* 반응형으로 메뉴 폰트만 줄이기 */
+    @media (max-width: 576px) {
+      .menu-item {
+        font-size: 1.1rem !important;
+      }
+    }
+    @media (max-width: 400px) {
+      .menu-item {
+        font-size: 1rem !important;
+      }
+    }
   </style>
-</head>
-<body>
-  <header>
-    <%- include('partials/mainNavbar') %>
-  </header>
 
+  <!-- 탭 (메뉴) 고정 -->
+  <div class="container d-flex flex-wrap justify-content-around gap-4 mb-5 mt-3">
+    <span class="title-medium menu-item active-pill" style="font-size:1.3rem;" data-section="about">studio.Oven</span>
+    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="ci">ci</span>
+    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="history">History</span>
+    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="org">organization</span>
+  </div>
+
+  <!-- 메인 컨텐츠 영역 -->
   <main>
-    <!-- About us 섹션 (전체 유지) -->
-    <section>
-      <div class="container">
-        <h2 class="title-medium text-center" style="font-size:2.5rem; margin-bottom:2rem;">About us</h2>
-        <div class="d-flex flex-wrap justify-content-around gap-4 mb-5">
-          <span class="title-medium menu-item active-pill" style="font-size:1.3rem;">studio.Oven</span>
-          <span class="title-medium menu-item" style="font-size:1.3rem;">ci</span>
-          <span class="title-medium menu-item" style="font-size:1.3rem;">History</span>
-          <span class="title-medium menu-item" style="font-size:1.3rem;">Organization</span>
-        </div>
+    <!-- (A) About us 부분 -->
+    <div id="aboutSection">
+      <%- include('partials/studio-oven') %>
+    </div>
 
-        <div class="row align-items-center">
-          <div class="col-md-5 p-0">
-            <img 
-              src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//stairs.webp"
-              alt="왼쪽 수직 이미지" 
-              class="img-fluid" 
-            />
-          </div>
-          <div class="col-md-7 mt-4 mt-md-0 text-center">
-            <h3 class="mb-2" style="font-family:'GmarketSansMedium',sans-serif; font-size:1.3rem;">
-              혁신적인 도전과 발전을 통해
-            </h3>
-            <h3 class="mb-4" style="font-family:'GmarketSansBold',sans-serif; font-size:1.6rem;">
-              더 나은 미래를 위한 가치 창출을 목표로 합니다.
-            </h3>
-            <p style="line-height:1.7; margin-bottom:1rem;">
-              studio.Oven은 고객에게 풍요로운 삶과 가치있는 공간을 선사하는 종합 인테리어 디자인 그룹으로,<br />
-              다양한 라이프 스타일과 문화적 경험을 제공하고 있습니다.
-            </p>
-            <p style="line-height:1.7; margin-bottom:1rem;">
-              영종도 ‘오늘카페’를 시작으로 여러 현장들을 다루며 대한민국 인테리어 문화에<br />
-              새로운 패러다임을 제시했으며,<br />
-              전국 각지의 랜드마크를 기획하여 소비자들의 공간에 새로운 활력을 불어 넣고,<br />
-              다양한 현장 경험과 젊은 감각의 디자인으로 소비자들을 만족시켜왔습니다.
-            </p>
-            <p style="line-height:1.7; margin-bottom:1rem;">
-              앞으로도 협업역량이 더불어 실내건축을 중심으로 프랜차이즈 가맹사업 및 경영기업 컨설팅 등의<br />
-              여러 분야에 특화된 고품격 서비스를 보다 안정하게 제공하여<br />
-              고객의 눈높이에 맞는 <strong>‘고객 감동 기업’</strong>,<br />
-              그리고 한층 높은 수준의 정도경영과 지속가능경영으로 고객과 임직원, 협력업체가<br />
-              함께 발전하며 끊임없이 노력하는 <strong>‘투명하고 정직한’ 기업</strong>으로서,<br />
-              고객의 소중한 공간을 한층 더 업그레이드 하는 <strong>‘종합 디자인 기업’</strong>으로 진화하는<br />
-              Only-One 최강 디벨로퍼가 되어 더 나은 내일을 만들어 가겠습니다.
-            </p>
-            <p style="line-height:1.7; margin-top:2rem;">
-              스튜디오 오븐 임직원 일동
-            </p>
-          </div>
-        </div>
+    <!-- (B) History 부분 (기본적으로 hidden) -->
+    <div id="historySection" style="display:none; min-height:100vh;">
+      <div class="history-content-wrap">
+        <%- include('partials/history') %>
       </div>
-    </section>
+    </div>
 
-    <!-- "창의력과 기술력을 바탕으로" 섹션 (유지) -->
-    <section>
-      <div class="container p-0">
-        <div 
-          class="bg-cover text-center text-white"
-          style="background-image:url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//tailor-made.webp');"
+    <!-- (C) Organization 부분 (새로 추가) -->
+    <div id="orgSection" style="display:none; min-height:100vh;">
+      <div style="
+        text-align: center;
+        margin-bottom: 2rem;
+      ">
+        <h2
+          style="
+            font-family: 'GmarketSansBold', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #042b6e;
+            margin-bottom: 0.5rem;
+          "
         >
-          <div class="p-5">
-            <h3 class="title-bold" style="font-size:1.8rem; margin-bottom:1rem;">
-              창의력과 기술력을 바탕으로 최적화된 맞춤형 서비스를 제공합니다.
-            </h3>
-            <p class="pretendard-medium" style="line-height:1.7; max-width:800px; margin:0 auto;">
-              We provide customized services optimized based on creativity and technology.
-            </p>
-          </div>
-        </div>
+          Company Organization
+        </h2>
       </div>
-    </section>
 
-    <!-- XMZ세대의 결합 섹션 (카드 폭/둥근모서리/그림자/라인수정) -->
-    <section>
-      <div class="container p-0">
-        <div class="stairs-bg-opacity">
-          <div class="text-center py-5 px-3">
-            <div class="row row-cols-1 row-cols-md-4 g-4">
-              <!-- 1) XMZ세대의 결합 카드 -->
-              <div class="col">
-                <div class="card custom-card h-100">
-                  <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h4 class="card-title mb-0" style="color:#042b6e; font-size:1.3rem;">
-                      XMZ세대의 결합
-                    </h4>
-                    <!-- 가운데 선, 더 두껍게 & 살짝 올림 -->
-                    <div class="card-title-line"></div>
-                    <p class="card-text pretendard-light" style="line-height:1.7; color:#000;">
-                      X세대부터 MZ세대까지<br />
-                      다양한 문화적 경험과<br />
-                      가치관을 지니고 있어<br />
-                      트렌드에 강한 기업입니다.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2) 고객 맞춤 서비스 카드 -->
-              <div class="col">
-                <div class="card custom-card h-100">
-                  <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h4 class="card-title mb-0" style="color:#042b6e; font-size:1.3rem;">
-                      고객 맞춤 서비스
-                    </h4>
-                    <div class="card-title-line"></div>
-                    <p class="card-text pretendard-light" style="line-height:1.7; color:#000;">
-                      고객의 눈높이에 맞춘<br />
-                      니즈 파악을 통해<br />
-                      최상의 맞춤형 서비스를<br />
-                      제공합니다.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3) 전문적인 기술력 카드 -->
-              <div class="col">
-                <div class="card custom-card h-100">
-                  <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h4 class="card-title mb-0" style="color:#042b6e; font-size:1.3rem;">
-                      전문적인 기술력
-                    </h4>
-                    <div class="card-title-line"></div>
-                    <p class="card-text pretendard-light" style="line-height:1.7; color:#000;">
-                      각 분야의 전문 인력과<br />
-                      다양한 현장 경험들을 통한<br />
-                      노하우를 바탕으로<br />
-                      체계적인 기술력을 제공합니다.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4) A to Z 카드 -->
-              <div class="col">
-                <div class="card custom-card h-100">
-                  <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h4 class="card-title mb-0" style="color:#042b6e; font-size:1.3rem;">
-                      A to Z
-                    </h4>
-                    <div class="card-title-line"></div>
-                    <p class="card-text pretendard-light" style="line-height:1.7; color:#000;">
-                      건축기술력부터 브랜딩,<br />
-                      실내 디자인, 사인물 등<br />
-                      처음부터 끝까지<br />
-                      모든 공정을 함께합니다.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-            </div><!-- row -->
-          </div><!-- text-center py-5 px-3 -->
-        </div><!-- stairs-bg-opacity -->
-      </div><!-- container p-0 -->
-    </section>
-
-    <!-- Business 섹션 (유지) -->
-    <section>
-      <div class="container">
-        <h3 class="title-medium" style="font-size:2rem; margin-bottom:2rem;">Business</h3>
-        <div class="row align-items-center">
-          <div class="col-md-3">
-            <img 
-              src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ani-park.webp"
-              alt="만화카페 애니파크 로고" 
-              class="img-fluid" 
-            />
-          </div>
-          <div class="col-md-9 mt-4 mt-md-0">
-            <h4 class="pretendard-bold" style="font-size:1.4rem; margin-bottom:0.5rem;">
-              만화카페 애니파크 프랜차이즈 가맹사업부
-            </h4>
-            <p class="pretendard-medium" style="font-size:1.2rem;">
-              ANIPARK Franchise Business Team
-            </p>
-            <p style="line-height:1.7;">
-              만화카페 애니파크와 함께하는 프랜차이즈 가맹사업부에서는<br />
-              창의적이고 경쟁력 있는 콘텐츠와 차별화된 인테리어를 통해<br />
-              성공적인 가맹 비즈니스를 지원합니다.
-            </p>
-          </div>
-        </div>
+      <!-- 조직도 이미지 -->
+      <div style="text-align:center;">
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//organization.webp"
+          alt="organization"
+          style="max-width: 90%; height: auto;"
+        />
       </div>
-    </section>
+    </div>
+
+    <!-- (D) CI 부분 (추가) -->
+    <div id="ciSection" style="display:none; min-height:100vh;">
+      <!-- 제목: CI -->
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2
+          style="
+            font-family: 'GmarketSansBold', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #042b6e;
+            margin-bottom: 1rem;
+          "
+        >
+          Company CI
+        </h2>
+      </div>
+
+      <!-- 역순 이미지 나열 -->
+      <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+
+        <!-- (1) ci-logo.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-logo.webp"
+          alt="ci-logo"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (2) ci-logo2.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-logo2.webp"
+          alt="ci-logo2"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (3) ci-background.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-background.webp"
+          alt="ci-background"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (4) bellwether.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//bellwether.webp"
+          alt="bellwether"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (5) ani-park.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ani-park.webp"
+          alt="ani-park"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (6) 8_logo-type.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//8_logo-type.webp"
+          alt="8_logo-type"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (7) 7_logo-color.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//7_logo-color.webp"
+          alt="7_logo-color"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (8) 6_grid-system.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//6_grid-system.webp"
+          alt="6_grid-system"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (9) 6_gray-scale.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//6_gray-scale.webp"
+          alt="6_gray-scale"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+
+        <!-- (10) 5_symbol_motif.webp -->
+        <img
+          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//5_symbol_motif.webp"
+          alt="5_symbol_motif"
+          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
+        />
+      </div>
+    </div>
+
   </main>
 
-  <!-- footer 생략 -->
-  <!-- <footer>
+  <footer>
     <%- include('partials/footer') %>
-  </footer> -->
+  </footer>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- 탭 전환 JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const aboutSection = document.getElementById('aboutSection');
+      const historySection = document.getElementById('historySection');
+      const orgSection = document.getElementById('orgSection');
+      const ciSection = document.getElementById('ciSection'); // 추가
+
+      const menuItems = document.querySelectorAll('.menu-item');
+      // 기존 코드 유지, ciSection 추가만
+
+      menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // 모든 탭 스타일 초기화
+          menuItems.forEach(mi => mi.classList.remove('active-pill'));
+          this.classList.add('active-pill');
+
+          const target = this.getAttribute('data-section');
+
+          // 일단 모두 숨기기
+          aboutSection.style.display = 'none';
+          historySection.style.display = 'none';
+          orgSection.style.display = 'none';
+          ciSection.style.display = 'none';
+
+          // 해당하는 섹션만 표시
+          if (target === 'ci') {
+            ciSection.style.display = 'block';
+          } else if (target === 'history') {
+            historySection.style.display = 'block';
+          } else if (target === 'org') {
+            orgSection.style.display = 'block';
+          } else {
+            // 기본: about
+            aboutSection.style.display = 'block';
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
