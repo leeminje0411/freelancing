@@ -25,328 +25,333 @@
 </head>
 <body>
 
-  <header>
-    <%- include('partials/mainNavbar') %>
-  </header>
+<%- include('partials/mainNavbar') %>
 
-  <style>
-    @font-face {
-      font-family: 'GmarketSansLight';
-      src: url('/fonts/GmarketSansTTFLight.ttf') format('truetype');
-      font-weight: 300; 
-      font-style: normal;
-    }
-    @font-face {
-      font-family: 'GmarketSansMedium';
-      src: url('/fonts/GmarketSansTTFMedium.ttf') format('truetype');
-      font-weight: 500; 
-      font-style: normal;
-    }
-    @font-face {
-      font-family: 'GmarketSansBold';
-      src: url('/fonts/GmarketSansTTFBold.ttf') format('truetype');
-      font-weight: 700; 
-      font-style: normal;
-    }
+<header>
+  <p
+    class="title-bold text-center my-5"
+    style="
+      font-size:2.5rem;
+      color:#042b6e;
+    "
+  >
+    About us
+  </p>
+  <!-- 여기서 상단 메뉴 & “About us”를 한 세트로 -->
+  <div class="container d-flex flex-wrap align-items-center justify-content-around gap-4 my-5">
+    <!-- About us: G마켓 산스 Bold, 더 큰 폰트 -->
 
-    /* 기본 글꼴 설정 */
-    body {
-      margin: 0;
-      font-family: 'GmarketSansLight', sans-serif;
-      color: #042b6e;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin: 0;
-      padding: 0;
-    }
+    <!-- studio.Oven: G마켓 산스 Medium -->
+    <span
+      class="title-medium menu-item active-pill"
+      style="
+        font-size:1.3rem;
+        color:#042b6e;
+        cursor:pointer;
+      "
+      data-section="about"
+    >
+      studio.Oven
+    </span>
 
-    /* 폰트 계열 */
-    .title-medium {
-      font-family: 'GmarketSansMedium', sans-serif;
-    }
-    .title-bold {
-      font-family: 'GmarketSansBold', sans-serif;
-    }
-    .pretendard-bold { font-weight: 700; }
-    .pretendard-medium { font-weight: 500; }
-    .pretendard-light { font-weight: 300; }
+    <!-- 나머지 메뉴 (ci, History, organization) -->
+    <span
+      class="title-medium menu-item"
+      style="
+        font-size:1.3rem;
+        color:#042b6e;
+        cursor:pointer;
+      "
+      data-section="ci"
+    >
+      ci
+    </span>
+    <span
+      class="title-medium menu-item"
+      style="
+        font-size:1.3rem;
+        color:#042b6e;
+        cursor:pointer;
+      "
+      data-section="history"
+    >
+      History
+    </span>
+    <span
+      class="title-medium menu-item"
+      style="
+        font-size:1.3rem;
+        color:#042b6e;
+        cursor:pointer;
+      "
+      data-section="org"
+    >
+      organization
+    </span>
+  </div>
+</header>
 
-    /* 배경 사이즈 조정 */
-    .bg-cover {
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
+<style>
+  @font-face {
+    font-family: 'Pretendard Variable Light';
+    src: url('/fonts/Pretendard-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard Variable Medium';
+    src: url('/fonts/Pretendard-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard Variable Bold';
+    src: url('/fonts/Pretendard-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard Variable SemiBold';
+    src: url('/fonts/Pretendard-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
 
-    /* 메뉴 underline & active-pill */
+  /* 기본 글꼴 */
+  body {
+    margin: 0;
+    font-family: 'GmarketSansLight', sans-serif;
+    color: #042b6e;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .title-medium {
+    font-family: 'GmarketSansMedium', sans-serif;
+  }
+  .title-bold {
+    font-family: 'GmarketSansBold', sans-serif;
+  }
+
+  .pretendard-bold { font-weight: 700; }
+  .pretendard-medium { font-weight: 500; }
+  .pretendard-light { font-weight: 300; }
+
+  .bg-cover {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  /* 메뉴 underline & active-pill */
+  .menu-item {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding: 2px 6px;
+    /* Fade transition included below */
+  }
+  .menu-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #042b6e;
+    transition: width 0.3s ease;
+    transform: translateY(3px);
+  }
+  .menu-item:hover::after {
+    width: 100%;
+  }
+  .active-pill {
+    background-color: #042b6e;
+    color: #ffffff !important;
+    border-radius: 9999px;
+    padding: 0.3rem 1rem;
+    position: relative;
+    /* 활성화 탭 살짝 확대 */
+    transform: scale(1.07);
+    transition: all 0.3s ease; 
+  }
+  .active-pill::after {
+    display: none;
+  }
+
+  .custom-card {
+    max-width: 220px;
+    margin: 0 auto;
+    border-radius: 30px 30px 30px 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15),
+                0 1px 5px rgba(0,0,0,0.05);
+    background-color: #fff;
+    border: none;
+  }
+  .stairs-bg-opacity {
+    background:
+      linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+      url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//opacity-stairs.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .card-title-line {
+    width: 70%;
+    height: 3px;
+    background-color: #042b6e;
+    margin: 0.5rem auto 1rem;
+  }
+
+  /* About(기본) / History / Organization 전환 */
+  #aboutSection {
+    display: block; /* 초기 표시 */
+  }
+
+  /* 반응형: 메뉴 폰트만 줄이기 */
+  @media (max-width: 576px) {
     .menu-item {
-      position: relative;
-      display: inline-block;
-      text-decoration: none;
-      color: #042b6e;
-      transition: color 0.3s ease;
-      padding: 2px 6px;
-      cursor: pointer; /* 탭 전환 */
+      font-size: 1.1rem !important;
     }
-    .menu-item::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0%;
-      height: 2px;
-      background-color: #042b6e;
-      transition: width 0.3s ease;
-      transform: translateY(3px);
+  }
+  @media (max-width: 400px) {
+    .menu-item {
+      font-size: 1rem !important;
     }
-    .menu-item:hover::after {
-      width: 100%;
-    }
-    .active-pill {
-      background-color: #042b6e;
-      color: #ffffff !important;
-      border-radius: 9999px;
-      padding: 0.3rem 1rem;
-      position: relative;
-    }
-    .active-pill::after {
-      display: none;
-    }
+  }
 
-    /* 카드 */
-    .custom-card {
-      max-width: 220px;
-      margin: 0 auto;
-      border-radius: 30px 30px 30px 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15),
-                  0 1px 5px rgba(0,0,0,0.05);
-      background-color: #fff;
-      border: none;
-    }
-    .stairs-bg-opacity {
-      background:
-        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
-        url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//opacity-stairs.webp');
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-    .card-title-line {
-      width: 70%;
-      height: 3px;
-      background-color: #042b6e;
-      margin: 0.5rem auto 1rem;
-    }
+  /* --- 여기부터 "부드러운 전환" fade-in / fade-out 애니메이션 --- */
+  .fade-in {
+    animation: fadeIn 0.3s forwards;
+  }
+  .fade-out {
+    animation: fadeOut 0.3s forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+</style>
 
-    /* About(기본) / History / Organization 전환 */
-    #aboutSection {
-      display: block; /* 초기 표시 */
-    }
+<!-- 탭 전환 영역 -->
+<div class="container d-flex flex-wrap justify-content-around gap-4 mb-5"></div>
+<!--↑ 여기서 “studio.Oven” 탭 등은 이미 header에 있으므로 중복X -->
 
-    /* 반응형으로 메뉴 폰트만 줄이기 */
-    @media (max-width: 576px) {
-      .menu-item {
-        font-size: 1.1rem !important;
-      }
-    }
-    @media (max-width: 400px) {
-      .menu-item {
-        font-size: 1rem !important;
-      }
-    }
-  </style>
-
-  <!-- 탭 (메뉴) 고정 -->
-  <div class="container d-flex flex-wrap justify-content-around gap-4 mb-5 mt-3">
-    <span class="title-medium menu-item active-pill" style="font-size:1.3rem;" data-section="about">studio.Oven</span>
-    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="ci">ci</span>
-    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="history">History</span>
-    <span class="title-medium menu-item" style="font-size:1.3rem;" data-section="org">organization</span>
+<!-- 메인 컨텐츠 영역 -->
+<main>
+  <!-- (A) About us 부분 -->
+  <div id="aboutSection">
+    <%- include('partials/studio-oven') %>
   </div>
 
-  <!-- 메인 컨텐츠 영역 -->
-  <main>
-    <!-- (A) About us 부분 -->
-    <div id="aboutSection">
-      <%- include('partials/studio-oven') %>
+  <!-- (B) History 부분 (기본적으로 hidden) -->
+  <div id="historySection" style="display:none; min-height:100vh;">
+    <div class="history-content-wrap">
+      <%- include('partials/history') %>
+    </div>
+  </div>
+
+  <!-- (C) Organization 부분 -->
+  <div id="orgSection" style="display:none; min-height:100vh;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2
+        style="
+          font-family: 'GmarketSansBold', sans-serif;
+          font-weight: 700;
+          font-size: 2.5rem;
+          color: #042b6e;
+          margin-bottom: 0.5rem;
+        "
+      >
+        Company Organization
+      </h2>
     </div>
 
-    <!-- (B) History 부분 (기본적으로 hidden) -->
-    <div id="historySection" style="display:none; min-height:100vh;">
-      <div class="history-content-wrap">
-        <%- include('partials/history') %>
-      </div>
+    <!-- 조직도 이미지 -->
+    <div style="text-align:center;">
+      <img
+        src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//organization.webp"
+        alt="organization"
+        style="max-width: 90%; height: auto;"
+      />
     </div>
+  </div>
 
-    <!-- (C) Organization 부분 (새로 추가) -->
-    <div id="orgSection" style="display:none; min-height:100vh;">
-      <div style="
-        text-align: center;
-        margin-bottom: 2rem;
-      ">
-        <h2
-          style="
-            font-family: 'GmarketSansBold', sans-serif;
-            font-weight: 700;
-            font-size: 2.5rem;
-            color: #042b6e;
-            margin-bottom: 0.5rem;
-          "
-        >
-          Company Organization
-        </h2>
-      </div>
+  <!-- (D) CI 부분 -->
+  <div id="ciSection" style="display:none; min-height:100vh;">
+    <%- include('partials/ci') %>
+  </div>
+</main>
 
-      <!-- 조직도 이미지 -->
-      <div style="text-align:center;">
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//organization.webp"
-          alt="organization"
-          style="max-width: 90%; height: auto;"
-        />
-      </div>
-    </div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- (D) CI 부분 (추가) -->
-    <div id="ciSection" style="display:none; min-height:100vh;">
-      <!-- 제목: CI -->
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <h2
-          style="
-            font-family: 'GmarketSansBold', sans-serif;
-            font-weight: 700;
-            font-size: 2.5rem;
-            color: #042b6e;
-            margin-bottom: 1rem;
-          "
-        >
-          Company CI
-        </h2>
-      </div>
+<!-- 탭 전환 JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const aboutSection = document.getElementById('aboutSection');
+    const historySection = document.getElementById('historySection');
+    const orgSection = document.getElementById('orgSection');
+    const ciSection = document.getElementById('ciSection');
 
-      <!-- 역순 이미지 나열 -->
-      <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+    const menuItems = document.querySelectorAll('.menu-item');
 
-        <!-- (1) ci-logo.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-logo.webp"
-          alt="ci-logo"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+    // 현재 보여지는 섹션
+    let currentSection = aboutSection;
 
-        <!-- (2) ci-logo2.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-logo2.webp"
-          alt="ci-logo2"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        // 모든 탭 스타일 초기화
+        menuItems.forEach(mi => mi.classList.remove('active-pill'));
+        this.classList.add('active-pill');
 
-        <!-- (3) ci-background.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ci-background.webp"
-          alt="ci-background"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+        const target = this.getAttribute('data-section');
+        let newSection;
+        if (target === 'ci') {
+          newSection = ciSection;
+        } else if (target === 'history') {
+          newSection = historySection;
+        } else if (target === 'org') {
+          newSection = orgSection;
+        } else {
+          newSection = aboutSection; // 기본: about
+        }
 
-        <!-- (4) bellwether.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//bellwether.webp"
-          alt="bellwether"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+        // 같은 섹션이면 아무것도 안 함
+        if (currentSection === newSection) return;
 
-        <!-- (5) ani-park.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ani-park.webp"
-          alt="ani-park"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+        // 기존 섹션 서서히 사라지기 (fade-out)
+        currentSection.classList.remove('fade-in');
+        currentSection.classList.add('fade-out');
 
-        <!-- (6) 8_logo-type.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//8_logo-type.webp"
-          alt="8_logo-type"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+        // 애니메이션 끝나면 display:none 처리
+        currentSection.addEventListener('animationend', function handleFadeOut() {
+          currentSection.style.display = 'none';
+          currentSection.classList.remove('fade-out');
+          currentSection.removeEventListener('animationend', handleFadeOut);
 
-        <!-- (7) 7_logo-color.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//7_logo-color.webp"
-          alt="7_logo-color"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
+          // 새 섹션 보이기 & 페이드인
+          newSection.style.display = 'block';
+          newSection.classList.add('fade-in');
 
-        <!-- (8) 6_grid-system.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//6_grid-system.webp"
-          alt="6_grid-system"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
-
-        <!-- (9) 6_gray-scale.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//6_gray-scale.webp"
-          alt="6_gray-scale"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
-
-        <!-- (10) 5_symbol_motif.webp -->
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//5_symbol_motif.webp"
-          alt="5_symbol_motif"
-          style="max-width: 100%; height: auto; margin-bottom: 2rem;"
-        />
-      </div>
-    </div>
-
-  </main>
-
-  <footer>
-    <%- include('partials/footer') %>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- 탭 전환 JS -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const aboutSection = document.getElementById('aboutSection');
-      const historySection = document.getElementById('historySection');
-      const orgSection = document.getElementById('orgSection');
-      const ciSection = document.getElementById('ciSection'); // 추가
-
-      const menuItems = document.querySelectorAll('.menu-item');
-      // 기존 코드 유지, ciSection 추가만
-
-      menuItems.forEach(item => {
-        item.addEventListener('click', function() {
-          // 모든 탭 스타일 초기화
-          menuItems.forEach(mi => mi.classList.remove('active-pill'));
-          this.classList.add('active-pill');
-
-          const target = this.getAttribute('data-section');
-
-          // 일단 모두 숨기기
-          aboutSection.style.display = 'none';
-          historySection.style.display = 'none';
-          orgSection.style.display = 'none';
-          ciSection.style.display = 'none';
-
-          // 해당하는 섹션만 표시
-          if (target === 'ci') {
-            ciSection.style.display = 'block';
-          } else if (target === 'history') {
-            historySection.style.display = 'block';
-          } else if (target === 'org') {
-            orgSection.style.display = 'block';
-          } else {
-            // 기본: about
-            aboutSection.style.display = 'block';
-          }
-        });
+          // 현재 섹션 갱신
+          currentSection = newSection;
+        }, { once: true });
       });
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
