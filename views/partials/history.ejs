@@ -4,30 +4,25 @@
 <div style="
   width: 100%;
   text-align: center;
-
   position: relative; /* 아래 그라데이션 절대배치 위해 */
   z-index: 10;
 ">
   <!-- Company History : G마켓 산스 Bold -->
-  <h2
+  <h2 id="historyTitle"
     style="
       font-family: 'GmarketSansBold', sans-serif;
       font-weight: 700;
-      font-size: 2.5rem;
       color: #042b6e;
-      margin-bottom: 5rem;
+    
+      
+       background: linear-gradient(to bottom, #ffffff, #f8f8f8);
+      box-shadow: 0 15px 15px -10px rgba(0, 0, 0, 0.2);
     "
   >
     Company History
   </h2>
 
   <!-- (1) 수평바 -->
-  <div style="
-    width: 100%;
-    height: 2px;
-    background-color: #ccc;
-    position: relative;
-  "></div>
 
 </div>
 
@@ -41,14 +36,15 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-
   "
 >
   <style>
-    /* Pretendard Variable 로드 */
-   
-
     /* 이미지 위치 - 데스크톱: 80%, 모바일: 10% */
+    #historyTitle{
+      font-size:2rem;
+      padding-bottom: 2rem;
+
+    }
     #leftSection img {
       position: absolute;
       top: 0; 
@@ -57,13 +53,41 @@
       height: 100%;
       object-fit: contain;
       object-position: 90% center;
+      top: -3%;
+      /* ▼ 상단 10%만 잘라 보이도록 clip-path 추가 ▼ */
+      clip-path: inset(3% 0 0 0);
     }
     @media (max-width: 768px) {
       #leftSection img {
-        object-position: 10% center !important;
+        object-position: 30% center !important;
+        
       }
-    }
+      @media (max-width: 768px) {
+  #rightSection {
+    position: absolute;
+    left: 50%;
+    transform: translateX(20%);
+    /* ↓↓ 세로 정렬을 위로 붙이려면 ↓↓ */
+    top:-7.5% !important;
+  }
+}
+   #rightSection {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(20%);
 
+  /* 나머지 스타일 */
+}
+#rightSection li{
+   margin: 1.5rem 0;
+}
+#historyTitle{
+  font-size:1.5rem;
+  margin:0;
+  padding-bottom: 1rem;
+    }
+  }
     /* 리스트 스타일(.history-list) */
     .history-list {
       margin-top: 2rem;
@@ -85,7 +109,7 @@
     }
   </style>
 
-  <!-- (1) 왼쪽 섹션(배경 이미지 + 가운데 선) -->
+  <!-- 왼쪽 섹션(배경 이미지 + 가운데 선) -->
   <div
     id="leftSection"
     style="
@@ -93,7 +117,7 @@
       height: 100%;
       position: relative;
       overflow: hidden;
-      border-right: 1px solid #042b6e; /* 가운데 세로 구분선 */
+      border-right: 1px solid #042b6e;
     "
   >
     <img
@@ -102,7 +126,7 @@
     />
   </div>
 
-  <!-- (2) 오른쪽 섹션 (텍스트/리스트) -->
+  <!-- 오른쪽 섹션 (텍스트/리스트) -->
   <div
     id="rightSection"
     style="
@@ -111,6 +135,7 @@
       position: relative;
       display: flex;
       left: 5%;
+      top: -4%;
       align-items: center;
       color: #000;
     "
@@ -145,7 +170,6 @@
         <li>이태원 프리즘클럽</li>
         <li>강남 애니파크 프랜차이즈 가맹사업부</li>
         <li>강남 애니파크 오픈 공사</li>
-        <!-- 필요시 더 추가... -->
       </ul>
     </div>
   </div>

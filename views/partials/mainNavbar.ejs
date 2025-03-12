@@ -84,24 +84,19 @@
         <div class="menu-block">
           <div class="menu-title" data-target="#aboutSub">About us</div>
           <div id="aboutSub" class="sub-list collapse-list show">
-            <a class="sub-item" href="/about-us">studio.Oven</a><br />
-            <a class="sub-item" href="/studio-oven">ci</a><br />
-            <a class="sub-item" href="#">history</a><br />
-            <a class="sub-item" href="#">organization</a>
+            <a class="sub-item" href="/about-us/studio-oven">studio.Oven</a><br />
+            <a class="sub-item" href="/about-us/ci">ci</a><br />
+            <a class="sub-item" href="/about-us/history">history</a><br />
+            <a class="sub-item" href="/about-us/organization">organization</a>
           </div>
         </div>
 
         <!-- Projects -->
         <div class="menu-block">
-          <div class="menu-title" data-target="#projectsSub">Projects</div>
+          <div class="menu-title" data-target="#projectsSub">Archive</div>
           <div id="projectsSub" class="sub-list collapse-list">
-            <% category.forEach(item => { %>
-              <% if (item.id !== 1) { %>
-                <a class="sub-item" href="/project?id=<%= item.id %>">
-                  <%= item.categoryName %>
-                </a><br />
-              <% } %>
-            <% }) %>
+            <a class="sub-item" href="/Archives/projects">Projects</a><br />
+            <a class="sub-item" href="/Archives/modeling">Modelling</a>
           </div>
         </div>
 

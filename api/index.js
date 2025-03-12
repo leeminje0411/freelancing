@@ -176,12 +176,16 @@ app.get('/contact', async (req, res) => {
   }
 });
 
-app.get('/about-us', async (req, res) => {
+app.get('/about-us/studio-oven', async (req, res) => {
   try {
     const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
     res.render('About', {
       isMain: false,
-      category
+      category,
+      defaultTab: 'studio-oven'     // ← EJS에 넘길 탭 정보
     });
   } catch (err) {
     console.error(err);
@@ -189,6 +193,89 @@ app.get('/about-us', async (req, res) => {
   }
 });
 
+app.get('/about-us/ci', async (req, res) => {
+  try {
+    const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
+    res.render('About', {
+      isMain: false,
+      category,
+      defaultTab: 'ci'     // ← EJS에 넘길 탭 정보
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+app.get('/about-us/history', async (req, res) => {
+  try {
+    const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
+    res.render('About', {
+      isMain: false,
+      category,
+      defaultTab: 'history'     // ← EJS에 넘길 탭 정보
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+app.get('/about-us/organization', async (req, res) => {
+  try {
+    const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
+    res.render('About', {
+      isMain: false,
+      category,
+      defaultTab: 'organization'     // ← EJS에 넘길 탭 정보
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
+app.get('/Archives/projects', async (req, res) => {
+  try {
+    const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
+    res.render('Archives', {
+      isMain: false,
+      category,
+      defaultTab: 'projects'     // ← EJS에 넘길 탭 정보
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+app.get('/Archives/modeling', async (req, res) => {
+  try {
+    const { category } = await func.getCategory(req, res);
+
+    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
+    // 구분용 변수를 넘기면 됩니다.
+    res.render('Archives', {
+      isMain: false,
+      category,
+      defaultTab: 'modeling'     // ← EJS에 넘길 탭 정보
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
 
 // 이하 관리자
 app.get('/upload', async (req, res) => {

@@ -24,34 +24,33 @@
     font-style: light;
   }
 
-/* Pretendard SemiBold (OTF) */
-@font-face {
+  @font-face {
   font-family: 'Pretendard';
-  font-weight: 600; 
+  font-weight: 600; /* SemiBold 정도 */
   font-style: normal;
   src: url('/fonts/Pretendard-SemiBold.otf') format('opentype');
 }
 
-/* Pretendard Bold (TTF) */
+/* Pretendard Bold (OTF) */
 @font-face {
   font-family: 'Pretendard';
-  font-weight: 700;
+  font-weight: 700; /* Bold 정도 */
   font-style: normal;
   src: url('/fonts/Pretendard-Bold.ttf') format('truetype');
 }
 
-/* Pretendard Light (TTF) */
+/* Pretendard Light (OTF) */
 @font-face {
   font-family: 'Pretendard';
-  font-weight: 300;
+  font-weight: 300; /* Light 정도 */
   font-style: normal;
   src: url('/fonts/Pretendard-Light.ttf') format('truetype');
 }
 
-/* Pretendard Medium (TTF) */
+/* Pretendard Medium (OTF) */
 @font-face {
   font-family: 'Pretendard';
-  font-weight: 500;
+  font-weight: 500; /* Medium 정도 */
   font-style: normal;
   src: url('/fonts/Pretendard-Medium.ttf') format('truetype');
 }

@@ -1,41 +1,78 @@
 <!-- aboutContent.ejs -->
+<style>
+  .stairs-bg-opacity {
+    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                url(https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//opacity-stairs.webp);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+.card.custom-card {
+  /* 원래 max-width, background, etc. */
+  border-radius: 30px 30px 30px 8px; /* 예: 좌하만 8px, 나머지 세 모서리 30px */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0,0,0,0.05);
+  border: 1px solid #eee; /* 연한 선 */
+  width: 230px;
+  padding: 10px;
+}
+
+  /* ▼▼ PC 기본: width=500, height=900 그대로 ▼▼ */
+  /* (기본 style 인라인처럼 남겨두거나, 여기서 선언 가능) */
+
+  /* ▼▼ 모바일(최대 768px)일 때 이미지 높이=300px ▼▼ */
+  @media (max-width: 768px) {
+    /* 부모 DIV도 높이 300px */
+    .stairs-parent {
+      width: 100% !important;
+      height: 300px !important;
+    }
+    /* 이미지는 오버라이드 */
+    #stairsImg {
+      width: 100% !important;   /* 필요하면 auto 혹은 100% */
+      height: 300px !important; /* 강제 300px */
+      object-fit: cover;        /* 커버 유지 */
+      object-position: center; } /* 중앙 배치 */
+      #executive-ildong {
+        margin-bottom: 100px;
+    }
+  }
+</style>
+
 <section>
   <!-- (1) About us 섹션 -->
   <div class="container">
-    <!-- 'About us' 큰 제목: G마켓 산스 Bold, 가운데 정렬 -->
-
- 
-    <!-- 본문: col-md-5 + col-md-7 -->
     <div class="row align-items-center">
-      <!-- 왼쪽 이미지 -->
-      <div class="col-md-5 p-0"   style="
-    width: 500px;       /* 부모의 폭 */
-    height: 890px;      /* 부모의 높이, 여기까지만 보이도록 */
-    overflow: hidden;   /* 넘치는 영역(아랫부분) 숨김 */
-    position: relative; /* 필요 시 absolute 위치조정 등에 사용 */
-  ">
+      
+      <!-- 왼쪽 이미지 (부모DIV: stairs-parent) -->
+      <div 
+        class="col-md-5 p-0 stairs-parent" 
+        style="
+          width: 500px;     
+          height: 890px;    
+          overflow: hidden; 
+          position: relative;
+        "
+      >
         <img 
+          id="stairsImg"
           src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//stairs.webp"
           alt="왼쪽 수직 이미지"
           style="
-    width: 500px;      /* 원하는 폭 */
-    height: 900px;     /* 원하는 높이 */
-    object-fit: cover;
-    object-position: center;"
-    fetchpriority="high"
-  
+            width: 500px;  
+            height: 900px;
+            object-fit: cover;
+            object-position: center;
+          "
+          fetchpriority="high"
         />
       </div>
 
-      <!-- 오른쪽 텍스트: 가운데 정렬 + 내부는 왼쪽 정렬 -->
+      <!-- 오른쪽 텍스트 -->
       <div
         class="col-md-7 mt-4 mt-md-0 d-flex justify-content-center align-items-center"
         style="color:#000;"
       >
-        <!-- 가운데 정렬한 div, 안쪽은 왼쪽 정렬 -->
         <div class="d-flex flex-column justify-content-center" style="max-width: 600px; height: 700px; text-align: left;">
-
-          <!-- 소제목(1): G마켓 산스 Medium, 파란색(#042b6e) -->
           <h3
             class="mb-2"
             style="
@@ -46,8 +83,6 @@
           >
             혁신적인 도전과 발전을 통해
           </h3>
-
-          <!-- 소제목(2): G마켓 산스 Bold, 파란색(#042b6e) -->
           <h3
             class="mb-4"
             style="
@@ -59,7 +94,6 @@
             더 나은 미래를 위한 가치 창출을 목표로 합니다.
           </h3>
 
-          <!-- (A) 첫 번째 문단 (color: #042b6e 그대로) -->
           <p
             style="
               font-family:'Pretendard Variable Light', sans-serif;
@@ -80,7 +114,6 @@
             다양한 라이프 스타일과 문화적 경험을 제공하고 있습니다.
           </p>
 
-          <!-- (B) 두 번째 문단 (color:#000) + 줄바꿈 맞춤 -->
           <p
             style="
               font-family:'Pretendard Variable Light', sans-serif;
@@ -95,7 +128,6 @@
             다양한 현장 경험과 젊은 감각의 디자인으로 소비자들을 만족시켜왔습니다.
           </p>
 
-          <!-- (C) 세 번째 문단 (color:#000) + 줄바꿈 맞춤 -->
           <p
             style="
               font-family:'Pretendard Variable Light', sans-serif;
@@ -147,34 +179,30 @@
             더 나은 내일을 만들어 가겠습니다.
           </p>
 
-          <!-- (D) 마지막 문구 (Bold, color:#042b6e 그대로) -->
-           <div class="d-flex justify-content-between">
-         <span
-  style="
-    display: flex;           /* flex 컨테이너로 만들기 */
-    align-items: flex-end;   /* 내부 텍스트를 아래쪽 정렬 */
-    font-family:'Pretendard Variable Bold', sans-serif;
-
-  
-    color: #042b6e;
-    font-size:1.2rem;
-  "
->
-  스튜디오 오븐 임직원 일동
-</span>
-           
+          <div class="d-flex justify-content-between" id="executive-ildong">
+            <span
+              style="
+                display: flex;
+                align-items: flex-end;
+                font-family:'Pretendard Variable Bold', sans-serif;
+                color: #042b6e;
+                font-size:1.2rem;
+               
+              "
+            >
+              스튜디오 오븐 임직원 일동
+            </span>
             <img
-  src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//executive-logo2.webp"
-  alt=""
-  width="100"
-  height="79"
-/>
-           </div>
-
-        </div> <!-- /max-width:600px -->
-      </div> <!-- /col-md-7 d-flex justify-content-center -->
-    </div> <!-- /row -->
-  </div> <!-- /container -->
+              src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//executive-logo2.webp"
+              alt=""
+              width="100"
+              height="79"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- (2) "창의력과 기술력을..." 풀배경 섹션 -->
   <div class="container p-0">
@@ -182,16 +210,12 @@
       class="bg-cover text-center text-white  d-flex flex-column justify-content-center"
       style="
         background-image:url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//tailor-made.webp');
-         min-height: 300px;   
-      background-repeat: no-repeat;
-  
-    background-position: 50% 0%;
-   
+        min-height:300px;
+        background-repeat: no-repeat;
+        background-position:50% 0%;
       "
-      
     >
       <div class="p-5">  
-        <!-- 여기서는 G마켓 Sans Bold 등 원래 코드를 그대로 유지 -->
         <h3
           style="
             font-family:'GmarketSansBold', sans-serif;
@@ -215,146 +239,191 @@
     </div>
   </div>
 
-  <!-- (3) XMZ세대 카드 섹션 (원본 그대로) -->
- <div class="container p-0">
-  <div class="stairs-bg-opacity">
-    <div class="py-5 px-3">
-      <!-- 핵심: 'justify-content-center' + 'g-4' -->
-      <div class="row row-cols-1 row-cols-md-4 justify-content-center g-4">
-        
-        <!-- 카드 1 -->
-        <div class="col-auto">
-          <div class="card custom-card h-100">
-            <div class="card-body d-flex flex-column" style="text-align:center;">
-              <h4
-                class="card-title mb-0"
-                style="
-                  font-family:'GmarketSansBold', sans-serif;
-                  color:#042b6e;
-                  font-size:1.3rem;
-                "
-              >
-                XMZ세대의 결합
-              </h4>
-              <div class="card-title-line"></div>
-              <p
-                class="card-text"
-                style="
-                  font-family:'Pretendard Variable Light', sans-serif;
-                  line-height:1.7;
-                  color:#000;
-                "
-              >
-                X세대부터 MZ세대까지<br />
-                다양한 문화적 경험과<br />
-                가치관을 지니고 있어<br />
-                트렌드에 강한 기업입니다.
-              </p>
+ <!-- aboutContent.ejs -->
+<style>
+  .stairs-bg-opacity {
+    background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                url(https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//opacity-stairs.webp);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  /* 모바일(최대 768px) 시: 이미지 높이=300px */
+  @media (max-width: 768px) {
+    .stairs-parent {
+      width: 100% !important;
+      height: 300px !important;
+    }
+    #stairsImg {
+      width: 100% !important;
+      height: 300px !important;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  /* 카드 부분: 기존 custom-card / card-title-line 유지 */
+  .card.custom-card {
+    /* (여기선 라운드/그림자 등 그대로) 
+       필요하다면 아래에서 border-radius나 box-shadow 추가 */
+    border-radius: 30px 30px 30px 8px; 
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.15),
+      0 1px 5px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+  }
+
+  /* ★ 수평선(.card-title-line)만 더 두껍고 길게(예: 80%) + 진한 파랑 */
+  .card-title-line {
+    width: 80%;                  /* 카드 폭의 80%로 가정 */
+    height: 3px;                /* 약간 두꺼운 라인 */
+    background-color: #042b6e;  /* 짙은 파랑 */
+    margin: 0.5rem auto 1rem;   /* 중앙 정렬 */
+  }
+</style>
+
+
+
+
+
+  <!-- (3) XMZ세대 카드 섹션 -->
+  <div class="container p-0">
+    <div class="stairs-bg-opacity">
+      <div class="py-5 px-3">
+        <div class="row row-cols-1 row-cols-md-4 justify-content-center g-4">
+          <!-- 카드 1 -->
+          <div class="col-auto">
+            <div class="card custom-card h-100">
+              <div class="card-body d-flex flex-column" style="text-align:center;">
+                <h4
+                  class="card-title mb-0"
+                  style="
+                    font-family:'GmarketSansBold', sans-serif;
+                    color:#042b6e;
+                    font-size:1.3rem;
+                  "
+                >
+                  XMZ세대의 결합
+                </h4>
+                <!-- 수평선 -->
+                <div class="card-title-line"></div>
+                <p
+                  class="card-text"
+                  style="
+                    font-family:'Pretendard Variable Light', sans-serif;
+                    line-height:1.7;
+                    color:#000;
+                  "
+                >
+                  X세대부터 MZ세대까지<br />
+                  다양한 문화적 경험과<br />
+                  가치관을 지니고 있어<br />
+                  트렌드에 강한 기업입니다.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 카드 2 -->
-        <div class="col-auto">
-          <div class="card custom-card h-100">
-            <div class="card-body d-flex flex-column" style="text-align: center;">
-              <h4
-                style="
-                  font-family:'GmarketSansBold', sans-serif;
-                  color:#042b6e;
-                  font-size:1.3rem;
-                  margin-bottom:0;
-                "
-              >
-                고객 맞춤 서비스
-              </h4>
-              <div class="card-title-line"></div>
-              <p
-                style="
-                  font-family:'Pretendard Variable Light', sans-serif;
-                  line-height:1.7;
-                  color:#000;
-                "
-              >
-                고객의 눈높이에 맞춘<br />
-                니즈 파악을 통해<br />
-                최상의 맞춤형 서비스를<br />
-                제공합니다.
-              </p>
+          <!-- 카드 2 -->
+          <div class="col-auto">
+            <div class="card custom-card h-100">
+              <div class="card-body d-flex flex-column" style="text-align: center;">
+                <h4
+                  style="
+                    font-family:'GmarketSansBold', sans-serif;
+                    color:#042b6e;
+                    font-size:1.3rem;
+                    margin-bottom:0;
+                  "
+                >
+                  고객 맞춤 서비스
+                </h4>
+                <div class="card-title-line"></div>
+                <p
+                  style="
+                    font-family:'Pretendard Variable Light', sans-serif;
+                    line-height:1.7;
+                    color:#000;
+                  "
+                >
+                  고객의 눈높이에 맞춘<br />
+                  니즈 파악을 통해<br />
+                  최상의 맞춤형 서비스를<br />
+                  제공합니다.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 카드 3 -->
-        <div class="col-auto">
-          <div class="card custom-card h-100">
-            <div class="card-body d-flex flex-column" style="text-align: center;">
-              <h4
-                style="
-                  font-family:'GmarketSansBold', sans-serif;
-                  color:#042b6e;
-                  font-size:1.3rem;
-                  margin-bottom:0;
-                "
-              >
-                전문적인 기술력
-              </h4>
-              <div class="card-title-line"></div>
-              <p
-                style="
-                  font-family:'Pretendard Variable Light', sans-serif;
-                  line-height:1.7;
-                  color:#000;
-                "
-              >
-                각 분야의 전문 인력과<br />
-                다양한 현장 경험들을 통한<br />
-                노하우를 바탕으로<br />
-                체계적인 기술력을 제공합니다.
-              </p>
+          <!-- 카드 3 -->
+          <div class="col-auto">
+            <div class="card custom-card h-100">
+              <div class="card-body d-flex flex-column" style="text-align: center;">
+                <h4
+                  style="
+                    font-family:'GmarketSansBold', sans-serif;
+                    color:#042b6e;
+                    font-size:1.3rem;
+                    margin-bottom:0;
+                  "
+                >
+                  전문적인 기술력
+                </h4>
+                <div class="card-title-line"></div>
+                <p
+                  style="
+                    font-family:'Pretendard Variable Light', sans-serif;
+                    line-height:1.7;
+                    color:#000;
+                  "
+                >
+                  각 분야의 전문 인력과<br />
+                  다양한 현장 경험들을 통한<br />
+                  노하우를 바탕으로<br />
+                  체계적인 기술력을 제공합니다.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 카드 4 -->
-        <div class="col-auto">
-          <div class="card custom-card h-100">
-            <div class="card-body d-flex flex-column" style="text-align: center;">
-              <h4
-                style="
-                  font-family:'GmarketSansBold', sans-serif;
-                  color:#042b6e;
-                  font-size:1.3rem;
-                  margin-bottom:0;
-                "
-              >
-                A to Z
-              </h4>
-              <div class="card-title-line"></div>
-              <p
-                style="
-                  font-family:'Pretendard Variable Light', sans-serif;
-                  line-height:1.7;
-                  color:#000;
-                "
-              >
-                건축기술력부터 브랜딩,<br />
-                실내 디자인, 사인물 등<br />
-                처음부터 끝까지<br />
-                모든 공정을 함께합니다.
-              </p>
+          <!-- 카드 4 -->
+          <div class="col-auto">
+            <div class="card custom-card h-100">
+              <div class="card-body d-flex flex-column" style="text-align: center;">
+                <h4
+                  style="
+                    font-family:'GmarketSansBold', sans-serif;
+                    color:#042b6e;
+                    font-size:1.3rem;
+                    margin-bottom:0;
+                  "
+                >
+                  A to Z
+                </h4>
+                <div class="card-title-line"></div>
+                <p
+                  style="
+                    font-family:'Pretendard Variable Light', sans-serif;
+                    line-height:1.7;
+                    color:#000;
+                  "
+                >
+                  건축기술력부터 브랜딩,<br />
+                  실내 디자인, 사인물 등<br />
+                  처음부터 끝까지<br />
+                  모든 공정을 함께합니다.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-
-      </div><!-- /row -->
-    </div><!-- /py-5 px-3 -->
-  </div><!-- /stairs-bg-opacity -->
-</div><!-- /container p-0 -->
+        </div><!-- /row -->
+      </div><!-- /py-5 px-3 -->
+    </div><!-- /stairs-bg-opacity -->
+  </div><!-- /container p-0 -->
 
   <!-- (4) Business 섹션 -->
   <div class="container mt-5">
-    <!-- 가운데 배치 + 양옆 직선 -->
     <div style="display:flex; align-items:center; justify-content:center; margin-bottom:2rem;">
       <span style="flex-grow:1; height:2px; background-color:#ccc;"></span>
       <h3
@@ -363,7 +432,6 @@
           font-size:2rem;
           margin:0 1rem;
           color:#042b6e;
-          
         "
       >
         Business
@@ -372,68 +440,79 @@
     </div>
 
     <!-- 만화카페 애니파크 섹션 -->
-    <div class="d-flex justify-content-center" style="gap:2rem;">
-      <!-- 좌측 로고 -->
-      <div class="text-start">
-        <img
-          src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ani-park.webp"
-          alt="만화카페 애니파크 로고"
-          class="img-fluid"
-          width="200"
-          height="47"
-        />
-      </div>
-
-      <!-- 우측 텍스트: 왼쪽 정렬, 일부 Bold/Medium 처리 -->
-      <div class="" style="text-align:left;">
-        <!-- 한글 제목: GmarketSansMedium, 마지막 ‘가맹사업부’만 Bold, 파란색(#042b6e) -->
-        <span
-          style="
-            font-family:'GmarketSansMedium', sans-serif;
-            font-size:1.4rem;
-            color:#042b6e;
-            display:inline-block;
-            margin-bottom:0.5rem;
-          "
-        >
-          만화카페 애니파크 프랜차이즈
-          <span
-            style="
-              font-family:'GmarketSansBold', sans-serif;
-            "
-          >
-            가맹사업부
-          </span>
-        </span>
-        <br/>
-
-        <!-- 영문: Pretendard Variable Medium + #999 -->
-        <span
-          style="
-            font-family:'Pretendard Variable Medium', sans-serif;
-            font-size:1.2rem;
-            color:#999;
-            display:inline-block;
-            margin-bottom:1rem;
-          "
-        >
-          ANIPARK Franchise Business Team
-        </span>
-
-        <!-- 필요하면 본문 추가: Pretendard Variable Light, color:#000
-        <p
-          style="
-            font-family:'Pretendard Variable Light', sans-serif;
-            line-height:1.7;
-            color:#000;
-          "
-        >
-          만화카페 애니파크와 함께하는 프랜차이즈 가맹사업부에서는<br/>
-          창의적이고 경쟁력 있는 콘텐츠와 차별화된 인테리어를 통해<br/>
-          성공적인 가맹 비즈니스를 지원합니다.
-        </p>
-        -->
-      </div>
-    </div>
+   <!-- business-flex 라는 임의 클래스 추가 -->
+<div 
+  class="d-flex justify-content-center business-flex" 
+  style="gap:2rem;"
+>
+  <div class="text-start">
+    <img
+      src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//ani-park.webp"
+      alt="만화카페 애니파크 로고"
+      class="img-fluid"
+      width="200"
+      height="47"
+    />
   </div>
+  <div style="text-align:left;">
+    <span
+      style="
+        font-family:'GmarketSansMedium', sans-serif;
+        font-size:1.4rem;
+        color:#042b6e;
+        display:inline-block;
+        margin-bottom:0.5rem;
+      "
+    >
+      만화카페 애니파크 프랜차이즈
+      <span
+        style="font-family:'GmarketSansBold', sans-serif;"
+      >
+        가맹사업부
+      </span>
+    </span>
+    <br/>
+    <span
+      style="
+        font-family:'Pretendard Variable Medium', sans-serif;
+        font-size:1.2rem;
+        color:#999;
+        display:inline-block;
+        margin-bottom:1rem;
+      "
+    >
+      ANIPARK Franchise Business Team
+    </span>
+  </div>
+</div>
+  <style>
+@media (max-width: 768px) {
+  .business-flex {
+    flex-direction: column !important; /* 가로 -> 세로 */
+    align-items: center !important;    /* 가운데 정렬 */
+    gap: 1rem; /* 세로 간격 추가 (원하시면 늘이거나 줄이세요) */
+    align-items: flex-start; /* 세로 배치 시 왼쪽 정렬 */
+    margin-bottom: 50px;
+  }
+}
+</style>
 </section>
+
+<!-- ▼▼ media query: 모바일에서 이미지 height=300px ▼-->
+<style>
+@media (max-width:768px){
+  /* 최상위 이미지 → height=300px */
+  .col-md-5.p-0.stairs-parent { /* 만약 stairs-parent 라는 class를 안 썼다면 */
+    width: 100% !important;
+
+    height: 300px !important;
+    padding-bottom: 23rem !important; /* 300px의 비율 */
+  }
+  .col-md-5.p-0.stairs-parent img {
+    height: 200px !important;
+    width: auto !important;
+    object-fit: cover !important;
+    margin-bottom: 2rem;
+  }
+}
+</style>
