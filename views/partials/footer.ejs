@@ -1,118 +1,58 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    /* 부모 컨테이너 */
-    .footerMother {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      flex-direction: column; /* 모바일(기본): 세로 배치 */
-      align-items: flex-start;
-      margin-left: 10px;
-      margin-bottom: 10px;
-    }
-
-    .footerMother img {
-      /* 명시적인 width,height 속성과 별개로, 여기선 
-         style="width:70px; height:auto;"로 크기 조정 */
-      width: 70px; 
-      margin-bottom: 8px; /* 모바일: 이미지와 텍스트 사이 여백 */
-    }
-
-    /* 전체 텍스트 감싸는 컨테이너 */
-    .footerText { 
-      /* 모바일: 기본 block(세로) */
-    }
-
-    /* 문단 공통 스타일 */
-    .footer {
-      margin: 0;
+    span.footer {
+      display: inline-block;
       font-size: 12px;
-      color: #042b6e !important;
     }
 
-    /* 그룹 1: “스튜디오 오븐 / 주소” (항상 세로) */
-    .verticalGroup {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      /* “스튜디오 오븐” / “주소” 사이 간격 8px */
-      margin-bottom: 8px;
-      /* 모바일에서 아래 그룹과 간격 8px */
+    .footer-container {
+      margin-left: 20px; /* 필요에 맞춰 조절해서 사용 */
+      height: 60px;      /* 데스크톱에서 고정 높이 */
+    }
+    /* 이미지와 정보 섹션 사이 여백 */
+    .footer-container img {
+      margin-right: 50px; /* 이미지와 정보 섹션 사이 간격 */
     }
 
-    /* 그룹 2: “TEL / FAX” (모바일에서는 세로 배치) */
-    .horizontalGroup {
-      display: flex;
-      flex-direction: column; /* 모바일: 세로 배치 */
-      gap: 8px; /* TEL / FAX 사이 간격 8px */
-    }
-
-    /* 데스크톱(768px 이상) 스타일 */
-    @media (min-width: 768px) {
+    /* 반응형: 최대 너비 768px 이하 → column 배치 */
+    @media (max-width: 768px) {
+      .footer-container {
+        flex-direction: column !important;    /* 가로 → 세로 */
+        align-items: flex-start !important;   /* 각 요소 왼쪽 정렬 */
+        height: auto !important;             /* 높이 자동 늘어남 */
+      }
+      /* 이미지 아래 인포 섹션도 여백이 필요하면 적당히 margin-top 등 넣어주세요 */
       .footerMother {
-        flex-direction: row; /* 데스크톱: 가로 배치 */
-        align-items: flex-end;
-        margin-left: 20px;
-        margin-bottom: 20px;
+        margin-top: 10px; 
+        width: 100%; /* 필요 시 적용 */
       }
-
-      .footerMother img {
-        margin-bottom: 0;
-        margin-right: 20px; /* 이미지와 텍스트 사이 가로 여백 */
-      }
-
-      .footerText {
-        display: flex;
-        flex-direction: row; /* 그룹들을 가로로 배치 */
-        gap: 8px; /* 그룹 사이 간격 8px */
-        align-items: flex-end;
-      }
-
-      /* 그룹 1(스튜디오 오븐/주소)는 세로 유지 */
-      .verticalGroup {
-        flex-direction: column;
-        margin-bottom: 0;
-        gap: 8px;
-      }
-
-      /* 그룹 2(TEL/FAX)는 데스크톱에서 가로 배치 및 간격 확대 */
-      .horizontalGroup {
-        flex-direction: row; /* 가로 배치 */
-        gap: 30px; /* TEL과 FAX 사이 간격 30px */
-        align-items: center;
+      /* 모바일에서 이미지 오른쪽 마진 대신, 하단 여백 등으로 조정해도 됩니다 */
+      .footer-container img {
+        margin-right: 0;
+        margin-bottom: 10px;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="footerMother">
-    <!-- 명시적인 width/height 추가 -->
-    <img 
-      src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//footer-logo.webp" 
-      alt="logo" 
-      width="200" 
-      height="29"
-      style="width:200px; height:auto;" 
+  <div class="footer-container d-flex align-items-center">
+    <img
+      src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//footer-logo.webp"
+      alt="logo"
+      width="400"
+      height="57"
+      style="width:200px; height:29px;"
     />
-    <div class="footerText">
+    <div class="footerMother d-flex flex-column justify-content-between">
       <!-- 그룹 1: 스튜디오 오븐 / 주소 (세로 배치) -->
-      <div class="verticalGroup">
-        <p class="footer">스튜디오 오븐 studio.Oven [Interior&Design]</p>
-        <p class="footer">주소 ㅣ 서울 강남구 논현로 132길 11, 302호</p>
+      <div class="verticalGroup mb-1">
+        <span class="footer">회사명 | 스튜디오 오븐 studio.Oven [Interior&Design]</span>
       </div>
       <!-- 그룹 2: TEL / FAX -->
-      <div class="horizontalGroup">
-        <p class="footer">TEL ㅣ 02-6448-0308</p>
-        <p class="footer">FAX ㅣ 02-6448-0309</p>
+      <div class="footerMother d-flex justify-content-between mt-1" style="width: 600px;">
+        <span class="footer">주소 ㅣ 서울 강남구 논현로132길 11, 302호</span>
+        <span class="footer">TEL ㅣ 02-6448-0308</span>
+        <span class="footer">FAX ㅣ 02-6448-0309</span>
       </div>
     </div>
   </div>
-</body>
-</html>

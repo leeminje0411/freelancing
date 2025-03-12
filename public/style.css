@@ -24,6 +24,37 @@
     font-style: light;
   }
 
+/* Pretendard SemiBold (OTF) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600; 
+  font-style: normal;
+  src: url('/fonts/Pretendard-SemiBold.otf') format('opentype');
+}
+
+/* Pretendard Bold (TTF) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-style: normal;
+  src: url('/fonts/Pretendard-Bold.ttf') format('truetype');
+}
+
+/* Pretendard Light (TTF) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 300;
+  font-style: normal;
+  src: url('/fonts/Pretendard-Light.ttf') format('truetype');
+}
+
+/* Pretendard Medium (TTF) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-style: normal;
+  src: url('/fonts/Pretendard-Medium.ttf') format('truetype');
+}
   .cjk {
       font-family: 'NotoSansCJKkr', sans-serif !important;
   }

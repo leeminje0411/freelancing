@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스튜디오 오븐 - Contact</title>
+
+  <meta name="description" content="스튜디오 오븐 — 다양한 인테리어 프로젝트를 소개합니다.">
+  <meta name="keywords" content="스튜디오, 오븐, studio.oven, 인테리어, 만화카페, 디자인 스튜디오, 인테리어 공사, 인테리어 시공">
+  <meta property="og:title" content="studio.Oven - Contact">
+  <meta property="og:description" content="스튜디오 오븐 — 인테리어 공사 전문 업체">
+  <meta property="og:url" content="https://freelancing-git-main-leeminjes-projects.vercel.app/contact">
+  <meta property="og:image" content="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//mainlogo.webp">
+
+  <link rel="icon" href="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//favicon.webp">
+
+  <!-- Bootstrap CSS (비차단 방식) -->
+  <link 
+    rel="preload"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    as="style"
+    onload="this.rel='stylesheet'"
+  >
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  </noscript>
+
+  <!-- 사이트 전용 CSS -->
+  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+    /****************************************
+     * Pretendard 폰트 선언
+     ****************************************/
+    @font-face {
+      font-family: 'Pretendard';
+      font-weight: 200; /* ExtraLight */
+      font-style: normal;
+      src: url('/fonts/Pretendard-ExtraLight.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Pretendard';
+      font-weight: 300; /* Light */
+      font-style: normal;
+      src: url('/fonts/Pretendard-Light.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Pretendard';
+      font-weight: 500; /* Medium */
+      font-style: normal;
+      src: url('/fonts/Pretendard-Medium.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Pretendard';
+      font-weight: 600; /* Semibold */
+      font-style: normal;
+      src: url('/fonts/Pretendard-SemiBold.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Pretendard';
+      font-weight: 700; /* Bold */
+      font-style: normal;
+      src: url('/fonts/Pretendard-Bold.otf') format('opentype');
+    }
+
+    /* 메인 영역 높이 */
+    main {
+      height: 85vh;
+    }
+
+    /* Pretendard 클래스 */
+    .pretendard-medium {
+      font-family: 'Pretendard';
+      font-weight: 500;
+    }
+    .pretendard-exlight {
+      font-family: 'Pretendard';
+      font-weight: 200;
+    }
+
+    /* Contact 제목은 GmarketSansBold */
+    .contact-header {
+      text-align: center;
+      font-size: 40px;           /* PC에서 40px 유지 */
+      font-weight: bold;
+      margin-top: 50px;
+      font-family: 'GmarketSansBold', sans-serif;
+      margin-bottom: 40px;
+    }
+
+    /* Location & Downloads 버튼 */
+    .contact-nav {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      
+      margin-bottom: 30px;
+    }
+    .contact-nav button {
+      font-family: 'GmarketSansMedium', sans-serif;
+      font-size: 18px; /* PC에서 18px 유지 */
+      border: none;
+      cursor: pointer;
+      padding: 12px 40px;
+      border-radius: 30px;
+    }
+    .location-btn {
+      background-color: #2C3E66;
+      color: white;
+    }
+    .downloads-btn {
+      background: none;
+      color: #2C3E66;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    /* 메인 컨테이너 (4.5:5.5) + 높이 동일 */
+    .contact-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      display: flex;
+      gap: 40px;
+    }
+
+    /* 지도 섹션 */
+    .map-section {
+      display: flex;
+      flex-direction: column;
+      width: auto; /* PC에서 그대로 */
+    }
+    #map {
+      flex: 1;
+      width: 379px;  /* PC에서 379px */
+      border: 1px solid #ccc;
+      min-height: 300px;
+      margin: 0 auto; /* 맵을 가로 정렬 중앙에 */
+    }
+
+    /* 오른쪽 설명 섹션 */
+    .info-section {
+      display: flex;
+      flex-direction: column;
+      width: auto; /* PC에서 그대로 */
+    }
+
+    /* 구분선 */
+    .divider {
+      border-bottom: 1px solid #afafaf;
+      margin: 20px 0;
+      width: 110%;
+    }
+
+    /* "Address"와 "운영시간" 폰트 크기 크게 */
+    .title-medium {
+      font-size: 18px;
+      font-family: 'Pretendard';
+      font-weight: 500;
+      margin-right: 10px;
+    }
+
+    /* 지하철/버스/기타 medium */
+    .label-medium {
+      font-family: 'Pretendard';
+      font-weight: 500;
+      margin-right: 6px;
+    }
+
+    /* pipe(|) 양옆 spacing */
+    .pipe {
+      margin: 0 8px;
+    }
+
+    /* 본문 얇은 텍스트 (ExtraLight) */
+    .body-exlight {
+      font-family: 'Pretendard';
+      font-weight: 200;
+    }
+
+    /* 첫줄에서 Margin-left로 칸 맞춤 */
+    .subline {
+      margin-left: 20px;
+      margin-top: 3px;
+    }
+
+    /* 연락처 영역 */
+    .contact-details {
+      display: flex;
+      width: 110%;
+      justify-content: space-between; /* TEL, FAX, E-mail 간 공백 */
+      font-size: 14px;
+      margin-top: 15px;
+      font-family: 'Pretendard';
+      font-weight: 200;
+    }
+
+    /* 오픈채팅+QR 영역 상단 여백 */
+    .contact-bottom {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .contact-bottom a img {
+      width: 350px; /* PC 기본 */
+      height: 75px;
+    }
+    .qr-code img {
+      width: 79px; /* PC 기본 */
+      height: 79px;
+    }
+
+    /****************************************
+     * 👇 추가: 모바일 사이즈 대응
+     ****************************************/
+    @media (max-width: 768px) {
+      /* (1) Contact 폰트 40% 축소 (40px → 24px) */
+      .contact-header {
+        font-size: 24px !important; 
+        margin-top: 20px; /* 필요 시 살짝 조절 */
+      }
+
+      /* (2) Location/Downloads 버튼 30% 축소 (18px → ~12.6px) */
+      .contact-nav button {
+        font-size: 13px !important;
+      }
+
+      /* (3) 모바일에서 .contact-nav 부모 폭: 80% + justify-content-between */
+      .contact-nav {
+        width: 80% !important;
+        margin: 0 auto !important;
+        justify-content: space-between !important;
+      }
+          /* (3) 모바일에서 .contact-nav 부모 폭: 80% + 양쪽 버튼 폭 균등 분배 */
+    .contact-nav {
+      width: 80% !important;
+      margin: 0 auto !important;
+      justify-content: space-between !important;
+      gap: 0 !important; /* 필요하다면 간격 없애기 */
+    }
+    .contact-nav button {
+      /* 버튼들을 동일 폭 48~50%로 강제 */
+      width: 48% !important;   /* or 50% !important */
+      text-align: center;      /* 가운데 정렬 */
+      white-space: nowrap;     /* 한 줄 유지 */
+    }
+      /* (4) 카카오 맵, info 섹션 각각 90% 폭 → 중앙 정렬 */
+      .map-section {
+        width: 95% !important;
+        margin: 0 auto;
+      }
+      #map {
+        width: 95% !important;  /* 모바일에서 맵 폭 90% */
+      }
+      .info-section {
+        width: 90% !important;
+        margin: 0 auto;
+      }
+
+      /* 기존 반응형 부분 유지 */
+      .contact-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .contact-details {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      .navbar{
+        margin-top: 0 !important;
+      }
+      /* (5) 오픈 채팅 & QR 중앙 정렬 */
+      .contact-bottom {
+        flex-wrap: nowrap;
+        justify-content: center; /* 가운데 정렬 추가 */
+      }
+      .contact-bottom a img {
+        width: 200px !important; /* 모바일에서 200px */
+        height: auto !important; 
+      }
+      .qr-code img {
+        width: 60px !important;  /* 모바일에서 60px */
+        height: 60px !important;
+      }
+    }
+  </style>
+  
+  <!-- Kakao Maps 라이브러리 -->
+  <script 
+    type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3be0573fb7f2f9b128b58dc1b0342b97&libraries=services"
+  ></script>
+</head>
+
+<body>
+  <header>
+    <%- include('partials/mainNavbar') %>
+  </header>
+
+  <main>
+    <h1 class="contact-header">Contact</h1>
+
+    <div class="navbar d-flex justify-content-center" style="margin-top: 80px;">
+      <!-- 아래 div가 모바일에서 80% 너비 + justify-content-between 됩니다 -->
+      <div class="contact-nav d-flex justify-content-between" style="width:600px; margin-bottom: 80px;">
+        <button class="location-btn">Location</button>
+        <button class="downloads-btn">Downloads</button>
+      </div>
+    </div>
+
+    <!-- 지도+설명 (4.5:5.5) -->
+    <div class="contact-container">
+      <!-- 왼쪽(지도) -->
+      <div class="map-section">
+        <div id="map"></div>
+      </div>
+
+      <!-- 오른쪽(설명) -->
+      <div class="info-section">
+        <!-- 1) Adress -->
+        <p style="margin-bottom:1.5rem">
+          <span class="title-medium mb-5">Adress</span>
+          <span class="body-exlight">서울 강남구 논현동 86-16</span>
+        </p>
+      
+        <!-- 2) 지하철, 버스 -->
+        <p>
+          <span class="label-medium">지하철 &nbsp;|</span>
+          <span class="body-exlight">&nbsp;7호선 학동역 8번 출구에서 143m</span>
+        </p>
+        <p>
+          <span class="label-medium">버스<span style="color:transparent">철</span> &nbsp;|</span>
+          <span class="body-exlight">&nbsp;147번 / </span>
+          <span class="body-exlight">463번 / </span>
+          <span class="body-exlight">4211번/ </span>
+          <span class="body-exlight"> 강남08번 강남 을지로 방면 학동역에서 하차</span>
+        </p>
+        <p class="body-exlight subline" style="margin-left: 0px; margin-top: 0.5rem;">
+          (방문 시 1층에 주차장이 있으나 비교적 협소한 점 참고 부탁드립니다.)
+        </p>
+
+        <!-- 구분선 -->
+        <div class="divider"></div>
+
+        <!-- 3) 운영시간 -->
+        <div class="d-flex">
+          <p style="margin-bottom:8px;">
+            <span class="title-medium">운영시간</span>
+          </p>
+          <div class="d-flex flex-column">
+            <p class="body-exlight subline" style="margin-left: 10px;">
+              평일 오전 8시 00분 ~ 오후 6시 00분 | 공휴일 휴무 ( 변동 가능)
+            </p>
+            <p class="title-medium subline" style="margin-left: 10px; font-size: 16px;">
+              견적 문의 및 프랜차이즈 가맹문의 카카오톡 오픈채팅방 상시 가능
+            </p>
+          </div>
+        </div>
+
+        <!-- 연락처 -->
+        <div class="contact-details" style="margin-top: 30px;">
+          <span>TEL | 02-6448-0308</span>
+          <span>FAX | 02-6448-0309</span>
+          <span>E-mail | studiooven1@gmail.com</span>
+        </div>
+
+        <!-- 오픈 채팅 & QR -->
+        <div class="contact-bottom">
+          <a href="https://open.kakao.com/o/sPJjPEih">
+            <!-- PC: 350px / 모바일: 200px -->
+            <img 
+              src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//location-kakao.png"
+              alt="카카오톡"
+            >
+          </a>
+          <div class="qr-code">
+            <!-- PC: 79px / 모바일: 60px -->
+            <img 
+              src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//QR.png"
+              alt="QR 코드"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <%- include('partials/footer') %>
+  </footer>
+
+  <!-- 카카오 지도 로직 -->
+  <script>
+    /************************************************************
+     * 기존 폴리라인 위치 (학동역 8번 출구 → 스타벅스 코너 → 건물)
+     * + 최종 목적지
+     ************************************************************/
+    var stationExit8    = new kakao.maps.LatLng(37.514325, 127.030614);
+    var starbucksCorner = new kakao.maps.LatLng(37.514681, 127.030458);
+    var buildingPosition= new kakao.maps.LatLng(37.51501, 127.03151);
+    var finalPosition   = new kakao.maps.LatLng(37.5151315821327,127.03145657208145);
+
+    // 지도 생성
+    var mapCenter = new kakao.maps.LatLng(37.5145, 127.0310);
+    var mapOption = {
+      center: mapCenter,
+      level: 3
+    };
+    var map = new kakao.maps.Map(document.getElementById('map'), mapOption);
+
+    // 폴리라인 (4개 지점)
+    var linePath = [
+      stationExit8,
+      starbucksCorner,
+      buildingPosition,
+      finalPosition
+    ];
+    var polyline = new kakao.maps.Polyline({
+      path: linePath,
+      strokeWeight: 3,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1,
+      strokeStyle: 'dash'
+    });
+    polyline.setMap(map);
+
+    /************************************************************
+     * "스튜디오 오븐" 라벨 (커스텀 오버레이)
+     ************************************************************/
+    var labelContent = 
+      '<div style="padding:2px 6px; background:#fff; border:1px solid #999; border-radius:3px; font-size:12px; font-weight:bold;">스튜디오 오븐</div>';
+
+    var labelOverlay = new kakao.maps.CustomOverlay({
+      content: labelContent,
+      position: finalPosition,
+      xAnchor: 0.5,
+      yAnchor: 1.3
+    });
+    labelOverlay.setMap(map);
+  </script>
+</body>
+</html>
