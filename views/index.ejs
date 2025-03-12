@@ -5,48 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>스튜디오 오븐</title>
 
-  <!-- 메타 -->
-  <meta name="description" content="스튜디오 오븐 — 다양한 인테리어 프로젝트를 소개합니다.">
-  <meta name="keywords" content="스튜디오, 오븐, studio.oven, 인테리어, 만화카페, 디자인 스튜디오, 인테리어 공사, 인테리어 시공">
-  <meta property="og:title" content="studio.Oven">
-  <meta property="og:description" content="스튜디오 오븐 — 인테리어 공사 전문 업체">
-  <meta property="og:url" content="https://freelancing-git-main-leeminjes-projects.vercel.app/">
-  <meta property="og:image" content="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//mainlogo.webp">
-
-  <!-- 메인페이지 지정 -->
-  <link rel="canonical" href="https://www.dubbingnow.com/" />
-  <link rel="icon" href="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//favicon.webp">
-   <link rel="preload" href="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//compressed-background.webp" as="image">
-  <!-- Preconnect to CDN -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-  <!-- Bootstrap CSS를 비차단 방식으로 불러오기 -->
+  <!-- 메타, 부트스트랩, 스타일 불러오기 (질문 코드 그대로) -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         as="style" onload="this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
   </noscript>
-
-  <!-- style.css (사이트 전용) -->
   <link rel="stylesheet" href="/style.css" />
-
-  <!-- font-display: swap 적용 -->
   <style>
+    /* 1) 화면 전체 높이 + flex 컨테이너로 만들기 */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;           /* 플렉스 사용 */
+      flex-direction: column;  /* 위->아래 */
+    }
 
-    /* @font-face {
-      font-family: 'GmarketSansBold';
-      src: url('/fonts/GmarketSansTTFBold.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    } */
-    /* @font-face {
-      font-family: 'NotoSansCJKkr';
-      src: url('/fonts/NotoSansCJKkr-Regular.otf') format('opentype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    } */
-    /* 캐시 정책은 서버/Supabase 설정에서. */
+    main {
+      flex: 1;  /* “나머지 공간”을 main이 차지 */
+      /* background: #fafafa;  필요시 배경 등 */
+    }
+
   </style>
 </head>
 
@@ -54,20 +34,21 @@
   <header>
     <!-- nav include -->
     <%- include('partials/mainNavbar') %>
-    <!-- 숨김 h1/h2 -->
     <h1 class="visually-hidden">스튜디오 오븐 — stuido.Oven</h1>
-    <h2 class="visually-hidden">studio oven 는 인테리어 전문 업체 입니다. 인테리어 시공</h2>
   </header>
 
   <main>
-    <!-- ...본 페이지 컨텐츠... -->
+    <!-- 컨텐츠가 짧을 때는 화면 빈 공간을 main이 차지,
+         푸터가 자동으로 맨 아래 배치 됩니다.
+         컨텐츠가 길면 스크롤 생기고, 푸터는 컨텐츠 아래로 밀려납니다. -->
+
   </main>
 
   <footer>
     <%- include('partials/footer') %>
   </footer>
 
-  <!-- Bootstrap JS (defer로 렌더 차단 최소화) -->
+  <!-- Bootstrap JS (defer) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
 </html>

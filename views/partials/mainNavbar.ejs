@@ -14,6 +14,16 @@
     outline: none !important;
     box-shadow: none !important;
   }
+  .navbar-toggler {
+  /* 기본 테두리 제거 */
+  border: none !important;
+  /* 혹시 배경색도 제거하고 싶다면 */
+  background-color: transparent !important;
+  /* 혹시나 남아 있을 수 있는 그림자도 제거 */
+  box-shadow: none !important;
+  /* 테두리 라운딩도 깔끔히 없애려면 */
+  border-radius: 0 !important;
+}
 
   /* (3) isMain에 따른 배경 */
   <% if (isMain) { %>
