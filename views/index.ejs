@@ -13,20 +13,31 @@
   </noscript>
   <link rel="stylesheet" href="/style.css" />
   <style>
-    /* 1) 화면 전체 높이 + flex 컨테이너로 만들기 */
+    /* html, body를 100% 높이로 만들고, flex 컨테이너 구조 설정 */
     html, body {
-      height: 100%;
       margin: 0;
       padding: 0;
-      display: flex;           /* 플렉스 사용 */
-      flex-direction: column;  /* 위->아래 */
+      height: 100%;           /* 화면 전체 높이를 차지하도록 */
+      display: flex;          /* flex 컨테이너 */
+      flex-direction: column; /* 위 -> 아래 수직 배치 */
+      overflow: hidden;
     }
 
+    /* body에는 배경 스타일만 주고, flex:1은 제거합니다 */
+    body {
+      min-height: 100vh; /* 최소 높이를 화면 전체 높이로 설정 */
+      background-image: url('https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//compressed-background.webp');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+       
+     
+    }
+
+    /* main이 남은 공간을 모두 차지하도록 */
     main {
-      flex: 1;  /* “나머지 공간”을 main이 차지 */
-      /* background: #fafafa;  필요시 배경 등 */
+      flex: 1; /* 푸터를 페이지 맨 밑으로 밀어내는 핵심 */
     }
-
   </style>
 </head>
 
@@ -38,10 +49,10 @@
   </header>
 
   <main>
-    <!-- 컨텐츠가 짧을 때는 화면 빈 공간을 main이 차지,
-         푸터가 자동으로 맨 아래 배치 됩니다.
-         컨텐츠가 길면 스크롤 생기고, 푸터는 컨텐츠 아래로 밀려납니다. -->
-
+    <!-- 컨텐츠가 짧을 때는 화면의 빈 공간을 main이 차지,
+         footer가 자동으로 화면 하단에 붙습니다.
+         컨텐츠가 길면 스크롤이 생기고,
+         footer가 컨텐츠 아래로 자연스레 밀립니다. -->
   </main>
 
   <footer>

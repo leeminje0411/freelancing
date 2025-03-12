@@ -9,6 +9,7 @@
       margin-left: 20px; /* 필요에 맞춰 조절해서 사용 */
       height: 60px;      /* 데스크톱에서 고정 높이 */
     }
+
     /* 이미지와 정보 섹션 사이 여백 */
     .footer-container img {
       margin-right: 50px; /* 이미지와 정보 섹션 사이 간격 */
@@ -16,6 +17,7 @@
 
     /* 반응형: 최대 너비 768px 이하 → column 배치 */
     @media (max-width: 768px) {
+      /* 메인 footer 컨테이너를 세로로 */
       .footer-container {
         flex-direction: column !important;    /* 가로 → 세로 */
         align-items: flex-start !important;   /* 각 요소 왼쪽 정렬 */
@@ -26,15 +28,27 @@
         margin-top: 10px; 
         width: 100%; /* 필요 시 적용 */
       }
-      /* 모바일에서 이미지 오른쪽 마진 대신, 하단 여백 등으로 조정해도 됩니다 */
+      /* 모바일에서 이미지 오른쪽 마진 대신, 하단 여백 등으로 조정 */
       .footer-container img {
         margin-right: 0;
         margin-bottom: 10px;
       }
+
+      /* 주소 / TEL / FAX 영역을 세로로 배치하기 */
+      .footerMother.d-flex.justify-content-between.mt-1 {
+        flex-direction: column !important; 
+        width: auto !important; 
+      }
+      /* 각 span 사이 여백을 조금 줄 수도 있음 */
+      .footerMother.d-flex.justify-content-between.mt-1 .footer {
+        margin-bottom: 5px; /* 필요 시 조절 */
+      }
     }
   </style>
 </head>
-<body>
+
+  <!-- footer-container가 수평(d-flex align-items-center),
+       내부에 이미지 + footerMother(텍스트 묶음) 구조 -->
   <div class="footer-container d-flex align-items-center">
     <img
       src="https://xjoospswraznhebpbavk.supabase.co/storage/v1/object/public/studiooven//footer-logo.webp"
@@ -48,7 +62,8 @@
       <div class="verticalGroup mb-1">
         <span class="footer">회사명 | 스튜디오 오븐 studio.Oven [Interior&Design]</span>
       </div>
-      <!-- 그룹 2: TEL / FAX -->
+
+      <!-- 그룹 2: TEL / FAX (기본 가로, 모바일에선 세로로) -->
       <div class="footerMother d-flex justify-content-between mt-1" style="width: 600px;">
         <span class="footer">주소 ㅣ 서울 강남구 논현로132길 11, 302호</span>
         <span class="footer">TEL ㅣ 02-6448-0308</span>
