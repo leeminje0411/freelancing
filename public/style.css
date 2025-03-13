@@ -1,13 +1,13 @@
   @font-face {
     font-family: 'GmarketSansLight';
-    src: url('/fonts/GmarketSansLight.woff2') format('truetype');
+    src: url('/fonts/GmarketSansLight.woff2') format('woff2');
     font-weight: 300; 
     font-style: normal;
   }
 
   @font-face {
     font-family: 'GmarketSansMedium';
-    src: url('/fonts/GmarketSansMedium.woff2') format('truetype');
+    src: url('/fonts/GmarketSansMedium.woff2') format('woff2');
     font-weight: 0; 
     font-style: light;
   }
@@ -19,7 +19,7 @@
   }
   @font-face {
     font-family: 'NotoSansCJKkr';
-    src: url('/fonts/NotoSans-Regular.woff2') format('opentype');
+    src: url('/fonts/NotoSans-Regular.woff2') format('woff2');
     font-weight: light;
     font-style: light;
   }

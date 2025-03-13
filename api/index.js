@@ -27,6 +27,7 @@ credentials.private_key = credentials.private_key.split(String.raw`\n`).join('\n
 const cors = require('cors');
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
+const supabase = require('../lib/supabase');
 
 app.use(cors({
     origin: 'https://freelancing-git-main-leeminjes-projects.vercel.app/', // 혹은 특정 도메인만 허용 가능
@@ -246,13 +247,17 @@ app.get('/about-us/organization', async (req, res) => {
 app.get('/Archives/projects', async (req, res) => {
   try {
     const { category } = await func.getCategory(req, res);
+    // DB에서 type='projects'만 가져오기
+    const { data: projectPosts } = await supabase
+      .from('post')
+      .select('project_name, description, thumbnail_url', 'type')
+   
 
-    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
-    // 구분용 변수를 넘기면 됩니다.
     res.render('Archives', {
       isMain: false,
       category,
-      defaultTab: 'projects'     // ← EJS에 넘길 탭 정보
+      defaultTab: 'projects',
+      posts: projectPosts  // EJS에 렌더
     });
   } catch (err) {
     console.error(err);
@@ -263,13 +268,17 @@ app.get('/Archives/projects', async (req, res) => {
 app.get('/Archives/modeling', async (req, res) => {
   try {
     const { category } = await func.getCategory(req, res);
+    // DB에서 type='modeling'만 가져오기
+    const { data: modelingPosts } = await supabase
+      .from('post')
+      .select('project_name, description, thumbnail_url', 'type')
 
-    // "defaultTab: 'about'" 혹은 "studioOven" 같은 
-    // 구분용 변수를 넘기면 됩니다.
+
     res.render('Archives', {
       isMain: false,
       category,
-      defaultTab: 'modeling'     // ← EJS에 넘길 탭 정보
+      defaultTab: 'modeling',
+      posts: modelingPosts
     });
   } catch (err) {
     console.error(err);
